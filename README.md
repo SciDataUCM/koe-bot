@@ -2,7 +2,7 @@
 
 ## Who is Koe
 
-Koe is SciDataUCM's Telegram bot.
+Koe is SciDataUCM's Telegram bot (and yep... the koala of the picture above is Koe!).
 
 Koe is always ready to help you out answering your questions related to SciDataUCM.
 
