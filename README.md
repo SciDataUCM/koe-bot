@@ -8,8 +8,8 @@ Koe is always ready to help you out answering your questions related to SciDataU
 
 ## How can I feed Koe
 
-Just [open a conversation with Koe](t.me/KoeBot).
+Just [open a conversation with Koe](https://t.me/KoeBot).
 
 ## Where does Koe sleep
 
-Koe uses [python-telegram-bot](https://python-telegram-bot.org/) to communicate with Telegram servers.
+Koe uses the [python-telegram-bot API](https://python-telegram-bot.org/) to communicate with Telegram servers.
