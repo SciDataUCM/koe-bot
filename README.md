@@ -1,4 +1,4 @@
-![Koe square image](koe.png "Koe!")
+![Koe square image](koe.png =400x)
 
 ## Who is Koe
 
