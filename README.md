@@ -1,10 +1,12 @@
-![Koe square image](koe.png =400x)
+<p align="center">
+  <img alt="Koe!" src="koe.png" width="400" height="400">
+</p>
 
 ## Who is Koe
 
 Koe is SciDataUCM's Telegram bot (and yep... the koala of the picture above is Koe!).
 
-Koe is always ready to help you out answering your questions related to SciDataUCM.
+Koe is always there to help you out answering your SciDataUCM's related questions.
 
 ## How can I feed Koe
 
