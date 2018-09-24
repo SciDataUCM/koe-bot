@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 
 # Configuration
 BOTNAME = 'KoeBot'
-TOKEN = 'X'
+with open('config.txt', 'r') as cfg:
+    TOKEN = cfg.readline().rstrip('\n')
 
 # Command handlers
 def start(bot, update):
@@ -44,6 +45,9 @@ def empty_message(bot, update):
         if update.message.left_chat_member.username != BOTNAME:
             return goodbye(bot, update)
 
+def where(bot, update):
+    update.message.reply_text('Vivo en el despacho 120 de la Facultad de Informatica de la Universidad Complutense de Madrid ☺')
+
 def error(bot, update, error):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, error)
@@ -58,6 +62,8 @@ def main():
     dispatcher.add_handler(start_handler)
     help_handler = CommandHandler('help', help)
     dispatcher.add_handler(help_handler)
+    where_handler = CommandHandler('where', where)
+    dispatcher.add_handler(where_handler)
     empty_handler = MessageHandler(Filters.status_update, empty_message)
     dispatcher.add_handler(empty_handler)
 
