@@ -56,6 +56,10 @@ def collaborate(bot,update):
     bot.send_message(chat_id=update.message.chat_id, text=("For the purpose of collaboration follow this link:"
                                                             "\n[Link](https://docs.google.com/forms/d/e/1FAIpQLSeMJnOmN6xRua5CtTnwbYIv83gSL_EsjNUkNvV0HzKe82OAEQ/viewform)", parse_mode=telegram.ParseMode.MARKDOWN)
 
+def membership(bot,update):
+    bot.send_message(chat_id=update.message.chat_id, text=("New members should register at this link"
+                                                            "\n[Link🌐](https://docs.google.com/forms/d/e/1FAIpQLSdKRf8Lah2-2LFcUv3TIIcKDUhtBv1WdrdfQjwf4M0-XChRxA/viewform)", parse_mode=telegram.ParseMode.MARKDOWN)
+
 def main():
     """ Start Koe """
     updater = Updater(token=TOKEN)
@@ -72,6 +76,8 @@ def main():
     dispatcher.add_handler(empty_handler)
     collaborate_handler = CommandHandler('collaborate', collaborate)
     dispatcher.add_handler(collaborate_handler)
+    membership_handler = CommandHandler('membership', membership)
+    dispatcher.add_handler(membership_handler)
 
     # log all errors
     dispatcher.add_error_handler(error)
