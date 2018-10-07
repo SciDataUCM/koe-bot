@@ -7,6 +7,7 @@ import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
 import requests
+import cachetools
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
@@ -49,9 +50,16 @@ def empty_message(bot, update):
 def where(bot, update):
     update.message.reply_text('Vivo en el despacho 120 de la Facultad de Informatica de la Universidad Complutense de Madrid ☺')
 
-def news(bot, update):
+# Cache the news source for 30 minutes to avoid getting throttled and improve
+# latency for repeated calls.
+THIRTY_MINUTES = 30 * 60
+@cachetools.TTLCache(maxsize=1, ttl=THIRTY_MINUTES)
+def query_news_source():
     news_source = "https://www.reddit.com/r/machinelearning/hot.json?count=5"
-    response = requests.get(news_source).json()
+    return response = requests.get(news_source).json()
+
+def news(bot, update):
+    response = query_news_source()
     formatted_links = [
         "- [{}]({})".format(item["title"], item["url"])
         for item in response["data"]["children"]
