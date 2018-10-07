@@ -32,7 +32,7 @@ def welcome(bot, update):
                                                             " que tal vez te interese 😊\n[Website🌐](https://scidataucm.org/) - [Twitter🐤](https://twitter.com/scidataucm)"
                                                             " - [Instagram📷](https://www.instagram.com/scidataucm/) - [Github💻](https://github.com/SciDataUCM)"
                                                             " - Email✉: scidata@ucm.es"), parse_mode=telegram.ParseMode.MARKDOWN)
- 
+
 def goodbye(bot, update):
     logger.info("{}(username={}) left chat {}".format(update.message.left_chat_member.first_name, update.message.left_chat_member.username, update.message.chat_id))
 
@@ -52,6 +52,10 @@ def error(bot, update, error):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, error)
 
+def collaborate(bot,update):
+    bot.send_message(chat_id=update.message.chat_id, text=("For the purpose of collaboration follow this link:"
+                                                            "\n[Link](https://docs.google.com/forms/d/e/1FAIpQLSeMJnOmN6xRua5CtTnwbYIv83gSL_EsjNUkNvV0HzKe82OAEQ/viewform)", parse_mode=telegram.ParseMode.MARKDOWN)
+
 def main():
     """ Start Koe """
     updater = Updater(token=TOKEN)
@@ -66,6 +70,8 @@ def main():
     dispatcher.add_handler(where_handler)
     empty_handler = MessageHandler(Filters.status_update, empty_message)
     dispatcher.add_handler(empty_handler)
+    collaborate_handler = CommandHandler('collaborate', collaborate)
+    dispatcher.add_handler(collaborate_handler)
 
     # log all errors
     dispatcher.add_error_handler(error)
@@ -77,5 +83,5 @@ def main():
     # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
-if __name__ == '__main__':  
+if __name__ == '__main__':
     main()
