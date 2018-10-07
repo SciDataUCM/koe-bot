@@ -6,6 +6,7 @@
 import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
+import requests
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
@@ -32,7 +33,7 @@ def welcome(bot, update):
                                                             " que tal vez te interese 😊\n[Website🌐](https://scidataucm.org/) - [Twitter🐤](https://twitter.com/scidataucm)"
                                                             " - [Instagram📷](https://www.instagram.com/scidataucm/) - [Github💻](https://github.com/SciDataUCM)"
                                                             " - Email✉: scidata@ucm.es"), parse_mode=telegram.ParseMode.MARKDOWN)
- 
+
 def goodbye(bot, update):
     logger.info("{}(username={}) left chat {}".format(update.message.left_chat_member.first_name, update.message.left_chat_member.username, update.message.chat_id))
 
@@ -48,9 +49,19 @@ def empty_message(bot, update):
 def where(bot, update):
     update.message.reply_text('Vivo en el despacho 120 de la Facultad de Informatica de la Universidad Complutense de Madrid ☺')
 
+def news(bot, update):
+    news_source = "https://www.reddit.com/r/machinelearning/hot.json?count=5"
+    response = requests.get(news_source).json()
+    formatted_links = [
+        "- [{}]({})".format(item["title"], item["url"])
+        for item in response["data"]["children"]
+    ]
+    update.message.reply_text("\n".join(formatted_links))
+
 def error(bot, update, error):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, error)
+
 
 def main():
     """ Start Koe """
@@ -66,6 +77,8 @@ def main():
     dispatcher.add_handler(where_handler)
     empty_handler = MessageHandler(Filters.status_update, empty_message)
     dispatcher.add_handler(empty_handler)
+    news_handler = CommandHandler('news', news)
+    dispatcher.add_handler(news_handler)
 
     # log all errors
     dispatcher.add_error_handler(error)
@@ -77,5 +90,5 @@ def main():
     # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
-if __name__ == '__main__':  
+if __name__ == '__main__':
     main()
