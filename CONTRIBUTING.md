@@ -3,12 +3,11 @@
 We're so glad that you're thinking about contributing to this repo. Make sure you follow the following simple set of rules here while trying to contribute.
 
 ## Issues
-------
 
 Feel free to submit issues and enhancement requests.
 
 ## Steps to follow
-------------
+
 In general, we follow the "fork-and-pull" Git workflow.
 
  1. **Fork** the repo on GitHub
