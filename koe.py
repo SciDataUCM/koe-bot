@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """ SciDataUCM's Telegram bot """
+import os
 import commands
 
 import telegram
@@ -12,8 +13,10 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 # Configuration
 BOTNAME = 'KoeBot'
-with open('config.txt', 'r') as cfg:
-    TOKEN = cfg.readline().rstrip('\n')
+#with open('config.txt', 'r') as cfg:
+    #TOKEN = cfg.readline().rstrip('\n')
+#  Heroku Config vars
+TOKEN = os.environ['KOE_TOKEN']
 
 def welcome(bot, update):
     logger.info("{}(username={}) joined chat {}".format((user.first_name for user in update.message.new_chat_members), (user.username for user in update.message.new_chat_members), update.message.chat_id))
