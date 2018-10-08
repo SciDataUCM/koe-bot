@@ -16,8 +16,6 @@ Just [open a conversation with Koe](https://t.me/KoeBot).
 
 Koe uses the [python-telegram-bot API](https://python-telegram-bot.org/) to communicate with Telegram servers.
 
-------
-
 ## Requirements ⚙️
 
 Besides [Python 3.6](https://www.python.org/downloads/) we will be using the following packages:
