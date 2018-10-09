@@ -14,7 +14,7 @@ Just [open a conversation with Koe](https://t.me/KoeBot).
 
 ## Where does Koe sleep 🛌
 
-Koe uses the [python-telegram-bot API](https://python-telegram-bot.org/) to communicate with Telegram servers.
+Koe uses the [python-telegram-bot API](https://python-telegram-bot.org/) to communicate with Telegram servers and [open-weather-map](https://openweathermap.org/) to implement `/weather`.
 
 ## Requirements ⚙️
 
