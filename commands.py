@@ -53,7 +53,7 @@ def membership(bot,update):
 THIRTY_MINUTES = 30 * 60
 NEWS_CACHE = cachetools.TTLCache(maxsize=1, ttl=THIRTY_MINUTES)
 def query_news_source():
-    news_source = NEWS_CACHE["https://www.reddit.com/r/machinelearning/hot.json?count=5"]
+    news_source = "https://www.reddit.com/r/machinelearning/hot.json?count=5"
     response = requests.get(news_source).json()
     return response
 
