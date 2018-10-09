@@ -1,27 +1,13 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-""" SciDataUCM's Telegram bot """
-
 import telegram
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-import logging
 import requests
 import cachetools
 import os
-import commands
+import json
 
-# Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
-logger = logging.getLogger(__name__)
+from config import WEATHER_BASE_URL
+from logger import logger
 
-# Configuration
-BOTNAME = 'KoeBot'
-#with open('config.txt', 'r') as cfg:
-    #TOKEN = cfg.readline().rstrip('\n')
-#  Heroku Config vars
-TOKEN = os.environ['KOE_TOKEN']
-
+WEATHER_API_KEY =  os.environ['WEATHER_API_KEY']
 
 # Command handlers
 def start(bot, update):
@@ -62,8 +48,6 @@ def collaborate(bot,update):
 def membership(bot,update):
     bot.send_message(chat_id=update.message.chat_id, text=("New members should register at this link:"
                                                             " [Link🌐](https://docs.google.com/forms/d/e/1FAIpQLSdKRf8Lah2-2LFcUv3TIIcKDUhtBv1WdrdfQjwf4M0-XChRxA/viewform)"), parse_mode=telegram.ParseMode.MARKDOWN)
-
-
 # Cache the news source for 30 minutes to avoid getting throttled and improve
 # latency for repeated calls.
 THIRTY_MINUTES = 30 * 60
@@ -80,46 +64,23 @@ def news(bot, update):
         for item in response["data"]["children"]
     ]
     update.message.reply_text("\n".join(formatted_links))
-
-def error(bot, update, error):
-    """Log Errors caused by Updates."""
-    logger.warning('Update "%s" caused error "%s"', update, error)
-
-
-def main():
-    """ Start Koe """
-    updater = Updater(token=TOKEN)
-    dispatcher = updater.dispatcher
     
-        # Adding every command handler
-    start_handler = CommandHandler('start', commands.start)
-    dispatcher.add_handler(start_handler)
-    help_handler = CommandHandler('help', commands.help)
-    dispatcher.add_handler(help_handler)
-    where_handler = CommandHandler('where', commands.where)
-    dispatcher.add_handler(where_handler)
-    weather_handler = CommandHandler('weather', commands.weather)
-    dispatcher.add_handler(weather_handler)
-    empty_handler = MessageHandler(Filters.status_update, empty_message)
-    dispatcher.add_handler(empty_handler)
-    news_handler = CommandHandler('news', news)
-    dispatcher.add_handler(news_handler)
-    collaborate_handler = CommandHandler('collaborate', collaborate)
-    dispatcher.add_handler(collaborate_handler)
-    membership_handler = CommandHandler('membership', membership)
-    dispatcher.add_handler(membership_handler)
-    weather_handler = CommandHandler('weather', commands.weather)
-    dispatcher.add_handler(weather_handler)
-
-    # log all errors
-    dispatcher.add_error_handler(error)
-
-    updater.start_polling()
-
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
-    updater.idle()
-
-if __name__ == '__main__':  
-    main()
+def weather(bot, update):
+    """Send a message when the command /weather is issued."""
+    try:
+        r = requests.get('{}&appid={}'.format(WEATHER_BASE_URL, WEATHER_API_KEY))
+        weather = json.loads(r.text)
+    except:
+        update.message.reply_text('Sorry, I cannot told to you the current weather!')
+    else:
+        weather_message = 'It is {}({}) at the campus! The current temperature is {} K'.format(
+            weather['weather'][0]['main'],
+            weather['weather'][0]['description'].title(),
+            weather['main']['temp']) 
+        temperature_message = 'The MAX and MIN temperature are {} K and {} K, respectively.'.format(
+            weather['main']['temp_min'],
+            weather['main']['temp_max'])
+        
+        update.message.reply_text('{}\n{}\n\nFont: https://openweathermap.org'.format(
+            weather_message,
+            temperature_message))
