@@ -8,7 +8,7 @@ from config import WEATHER_BASE_URL
 from logger import logger
 
 BOTNAME = 'KoeBot'
-WEATHER_API_KEY =  'asd'
+WEATHER_API_KEY =  os.environ['WEATHER_API_KEY']
 
 # Command handlers
 def start(bot, update):
