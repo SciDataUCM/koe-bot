@@ -14,7 +14,7 @@ from logger import logger
 
 # Configuration
 BOTNAME = 'KoeBot'
-TOKEN = os.environ['KOE_TOKEN']
+TOKEN = '688735115:AAGMghIgO-4eRZW7XoU9-haD8wcICw7lrh4'
 
 def error(bot, update, error):
     """Log Errors caused by Updates."""

@@ -8,7 +8,7 @@ from config import WEATHER_BASE_URL
 from logger import logger
 
 BOTNAME = 'KoeBot'
-WEATHER_API_KEY =  os.environ['WEATHER_API_KEY']
+WEATHER_API_KEY =  'asd'
 
 # Command handlers
 def start(bot, update):
@@ -52,19 +52,19 @@ def membership(bot,update):
 # Cache the news source for 30 minutes to avoid getting throttled and improve
 # latency for repeated calls.
 THIRTY_MINUTES = 30 * 60
-NEWS_CACHE = cachetools.TTLCache(maxsize=1, ttl=THIRTY_MINUTES)
+@cachetools.cached(cachetools.TTLCache(maxsize=1, ttl=THIRTY_MINUTES))
 def query_news_source():
     news_source = "https://www.reddit.com/r/machinelearning/hot.json?count=5"
-    response = requests.get(news_source).json()
+    response = requests.get(news_source, headers = {'user-agent': 'KoeBot by /u/SciDataUCM'}).json()
     return response
 
 def news(bot, update):
     response = query_news_source()
     formatted_links = [
-        "- [{}]({})".format(item["title"], item["url"])
+        "- {}; LINK({})".format(item['data']["title"], item['data']["url"])
         for item in response["data"]["children"]
     ]
-    update.message.reply_text("\n".join(formatted_links))
+    bot.send_message(chat_id=update.message.chat_id, text=("\n\n".join(formatted_links[:5])))
     
 def weather(bot, update):
     """Send a message when the command /weather is issued."""
