@@ -51,9 +51,9 @@ def membership(bot,update):
 # Cache the news source for 30 minutes to avoid getting throttled and improve
 # latency for repeated calls.
 THIRTY_MINUTES = 30 * 60
-@cachetools.TTLCache(maxsize=1, ttl=THIRTY_MINUTES)
+NEWS_CACHE = cachetools.TTLCache(maxsize=1, ttl=THIRTY_MINUTES)
 def query_news_source():
-    news_source = "https://www.reddit.com/r/machinelearning/hot.json?count=5"
+    news_source = NEWS_CACHE["https://www.reddit.com/r/machinelearning/hot.json?count=5"]
     response = requests.get(news_source).json()
     return response
 
