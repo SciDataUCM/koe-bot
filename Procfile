@@ -1,1 +1,1 @@
-web: python koe.py
+worker: python koe.py
