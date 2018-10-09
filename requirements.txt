@@ -1,2 +1,4 @@
-""" python-telegram-bot API install """
-$ pip install python-telegram-bot --upgrade
+# python-telegram-bot API install 
+python-telegram-bot==7.0.1
+requests==2.16.5
+cachetools

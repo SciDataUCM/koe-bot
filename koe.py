@@ -6,6 +6,9 @@
 import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
+import requests
+import cachetools
+import os
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
@@ -13,8 +16,10 @@ logger = logging.getLogger(__name__)
 
 # Configuration
 BOTNAME = 'KoeBot'
-with open('config.txt', 'r') as cfg:
-    TOKEN = cfg.readline().rstrip('\n')
+#with open('config.txt', 'r') as cfg:
+    #TOKEN = cfg.readline().rstrip('\n')
+#  Heroku Config vars
+TOKEN = os.environ['KOE_TOKEN']
 
 # Command handlers
 def start(bot, update):
@@ -47,11 +52,7 @@ def empty_message(bot, update):
 
 def where(bot, update):
     update.message.reply_text('Vivo en el despacho 120 de la Facultad de Informatica de la Universidad Complutense de Madrid ☺')
-
-def error(bot, update, error):
-    """Log Errors caused by Updates."""
-    logger.warning('Update "%s" caused error "%s"', update, error)
-
+   
 def collaborate(bot,update):
     bot.send_message(chat_id=update.message.chat_id, text=("For the purpose of collaboration follow this link:"
                                                             "\n[Link](https://docs.google.com/forms/d/e/1FAIpQLSeMJnOmN6xRua5CtTnwbYIv83gSL_EsjNUkNvV0HzKe82OAEQ/viewform)", parse_mode=telegram.ParseMode.MARKDOWN)
@@ -59,6 +60,28 @@ def collaborate(bot,update):
 def membership(bot,update):
     bot.send_message(chat_id=update.message.chat_id, text=("New members should register at this link"
                                                             "\n[Link🌐](https://docs.google.com/forms/d/e/1FAIpQLSdKRf8Lah2-2LFcUv3TIIcKDUhtBv1WdrdfQjwf4M0-XChRxA/viewform)", parse_mode=telegram.ParseMode.MARKDOWN)
+
+
+# Cache the news source for 30 minutes to avoid getting throttled and improve
+# latency for repeated calls.
+THIRTY_MINUTES = 30 * 60
+@cachetools.TTLCache(maxsize=1, ttl=THIRTY_MINUTES)
+def query_news_source():
+    news_source = "https://www.reddit.com/r/machinelearning/hot.json?count=5"
+    return response = requests.get(news_source).json()
+
+def news(bot, update):
+    response = query_news_source()
+    formatted_links = [
+        "- [{}]({})".format(item["title"], item["url"])
+        for item in response["data"]["children"]
+    ]
+    update.message.reply_text("\n".join(formatted_links))
+
+def error(bot, update, error):
+    """Log Errors caused by Updates."""
+    logger.warning('Update "%s" caused error "%s"', update, error)
+
 
 def main():
     """ Start Koe """
@@ -74,6 +97,8 @@ def main():
     dispatcher.add_handler(where_handler)
     empty_handler = MessageHandler(Filters.status_update, empty_message)
     dispatcher.add_handler(empty_handler)
+    news_handler = CommandHandler('news', news)
+    dispatcher.add_handler(news_handler)
     collaborate_handler = CommandHandler('collaborate', collaborate)
     dispatcher.add_handler(collaborate_handler)
     membership_handler = CommandHandler('membership', membership)
@@ -89,5 +114,6 @@ def main():
     # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
-if __name__ == '__main__':
+if __name__ == '__main__':  
     main()
+                     
