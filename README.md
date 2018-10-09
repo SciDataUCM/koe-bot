@@ -36,7 +36,7 @@ pip install -r requirements.txt
 
 Please check our [CONTRIBUTING](CONTRIBUTING.md) file.
 
-## Code of conduct 👩🏽‍💻👨🏻‍💻
+## Code of conduct 💕
 
 Please check our [CODE OF CONDUCT](https://github.com/SciDataUCM/documentation/blob/master/CODE_OF_CONDUCT.md) file.
 
