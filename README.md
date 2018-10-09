@@ -21,6 +21,8 @@ Koe uses the [python-telegram-bot API](https://python-telegram-bot.org/) to comm
 Besides [Python 3.6](https://www.python.org/downloads/) we will be using the following packages:
 
 * [python-telegram-bot](https://python-telegram-bot.org/)
+* [requests](http://docs.python-requests.org/en/master/)
+* [cachetools](https://cachetools.readthedocs.io/en/latest/)
 
 You can simply install each package using `pip` as follows:
 ```bash
