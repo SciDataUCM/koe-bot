@@ -8,6 +8,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
 import requests
 import cachetools
+import os
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
@@ -15,8 +16,10 @@ logger = logging.getLogger(__name__)
 
 # Configuration
 BOTNAME = 'KoeBot'
-with open('config.txt', 'r') as cfg:
-    TOKEN = cfg.readline().rstrip('\n')
+#with open('config.txt', 'r') as cfg:
+    #TOKEN = cfg.readline().rstrip('\n')
+#  Heroku Config vars
+TOKEN = os.environ['KOE_TOKEN']
 
 # Command handlers
 def start(bot, update):
@@ -98,5 +101,5 @@ def main():
     # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
-if __name__ == '__main__':
+if __name__ == '__main__':  
     main()
