@@ -2,6 +2,8 @@
   <img alt="Koe!" src="koe.png" width="400" height="400">
 </p>
 
+[![Build Status](https://travis-ci.org/SciDataUCM/koe-bot.svg?branch=master)](https://travis-ci.org/SciDataUCM/koe-bot)
+
 ## Who is Koe 🐨
 
 Koe is SciDataUCM's Telegram bot (and yep... the koala of the picture above is Koe!).
