@@ -73,13 +73,18 @@ def weather(bot, update):
     except:
         update.message.reply_text('Sorry, I cannot told to you the current weather!')
     else:
-        weather_message = 'It is {}({}) at the campus! The current temperature is {} K'.format(
+        K = 273.15
+        CURRENT_TEMP = weather['main']['temp']
+        weather_message = 'It is {}({}) at the campus! The current temperature is {} ºC'.format(
             weather['weather'][0]['main'],
             weather['weather'][0]['description'].title(),
-            weather['main']['temp']) 
-        temperature_message = 'The MAX and MIN temperature are {} K and {} K, respectively.'.format(
-            weather['main']['temp_min'],
-            weather['main']['temp_max'])
+            CURRENT_TEMP)
+
+        TEMP_MIN = weather['main']['temp_min'] - K
+        TEMP_MAX = weather['main']['temp_max'] - K
+        temperature_message = 'The MAX and MIN temperature are {} ºC and {} ºC, respectively.'.format(
+            TEMP_MAX,
+            TEMP_MIN)
         
         update.message.reply_text('{}\n{}\n\nFont: https://openweathermap.org'.format(
             weather_message,
