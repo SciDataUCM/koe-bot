@@ -21,6 +21,7 @@ BOTNAME = 'KoeBot'
 #  Heroku Config vars
 TOKEN = os.environ['KOE_TOKEN']
 
+
 # Command handlers
 def start(bot, update):
     """Send a message when the command /start is issued."""
@@ -55,11 +56,12 @@ def where(bot, update):
    
 def collaborate(bot,update):
     bot.send_message(chat_id=update.message.chat_id, text=("For the purpose of collaboration follow this link:"
-                                                            " [Link🌐](https://docs.google.com/forms/d/e/1FAIpQLSeMJnOmN6xRua5CtTnwbYIv83gSL_EsjNUkNvV0HzKe82OAEQ/viewform)", parse_mode=telegram.ParseMode.MARKDOWN)
+                                                         " - [Link🌐](https://docs.google.com/forms/d/e/1FAIpQLSeMJnOmN6xRua5CtTnwbYIv83gSL_EsjNUkNvV0HzKe82OAEQ/viewform)"), parse_mode=telegram.ParseMode.MARKDOWN)
 
 def membership(bot,update):
     bot.send_message(chat_id=update.message.chat_id, text=("New members should register at this link:"
-                                                            " [Link🌐](https://docs.google.com/forms/d/e/1FAIpQLSdKRf8Lah2-2LFcUv3TIIcKDUhtBv1WdrdfQjwf4M0-XChRxA/viewform)", parse_mode=telegram.ParseMode.MARKDOWN)
+                                                            " [Link🌐](https://docs.google.com/forms/d/e/1FAIpQLSdKRf8Lah2-2LFcUv3TIIcKDUhtBv1WdrdfQjwf4M0-XChRxA/viewform)"), parse_mode=telegram.ParseMode.MARKDOWN)
+
 
 # Cache the news source for 30 minutes to avoid getting throttled and improve
 # latency for repeated calls.
@@ -67,7 +69,8 @@ THIRTY_MINUTES = 30 * 60
 @cachetools.TTLCache(maxsize=1, ttl=THIRTY_MINUTES)
 def query_news_source():
     news_source = "https://www.reddit.com/r/machinelearning/hot.json?count=5"
-    return response = requests.get(news_source).json()
+    response = requests.get(news_source).json()
+    return response
 
 def news(bot, update):
     response = query_news_source()
@@ -115,4 +118,3 @@ def main():
 
 if __name__ == '__main__':  
     main()
-                     
