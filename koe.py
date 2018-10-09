@@ -10,7 +10,7 @@ import requests
 import cachetools
 import os
 import commands
-import logger
+from logger import logger
 
 # Configuration
 BOTNAME = 'KoeBot'
