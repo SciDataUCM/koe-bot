@@ -41,7 +41,7 @@ def empty_message(bot, update):
 
 def where(bot, update):
     update.message.reply_text('Vivo en el despacho 120 de la Facultad de Informatica de la Universidad Complutense de Madrid ☺')
-   
+
 def collaborate(bot,update):
     bot.send_message(chat_id=update.message.chat_id, text=("For the purpose of collaboration follow this link:"
                                                          " - [Link🌐](https://docs.google.com/forms/d/e/1FAIpQLSeMJnOmN6xRua5CtTnwbYIv83gSL_EsjNUkNvV0HzKe82OAEQ/viewform)"), parse_mode=telegram.ParseMode.MARKDOWN)
@@ -65,7 +65,7 @@ def news(bot, update):
         for item in response["data"]["children"]
     ]
     bot.send_message(chat_id=update.message.chat_id, text=("\n\n".join(formatted_links[:5])))
-    
+
 def weather(bot, update):
     """Send a message when the command /weather is issued."""
     try:
@@ -86,7 +86,35 @@ def weather(bot, update):
         temperature_message = 'The MAX and MIN temperature are {} ºC and {} ºC, respectively.'.format(
             TEMP_MAX,
             TEMP_MIN)
-        
+
         update.message.reply_text('{}\n{}\n\nFont: https://openweathermap.org'.format(
             weather_message,
             temperature_message))
+
+def pollution(bot, update):
+    try:
+        r = requests.get('{}?appid={}'.format(CO_POLLUTION_BASE_URL, WEATHER_API_KEY))
+        co_pollution = json.loads(r.text)
+        r = requests.get('{}?appid={}'.format(O3_POLLUTION_BASE_URL, WEATHER_API_KEY))
+        o3_pollution = json.loads(r.text)
+        r = requests.get('{}?appid={}'.format(SO2_POLLUTION_BASE_URL, WEATHER_API_KEY))
+        so2_pollution = json.loads(r.text)
+        r = requests.get('{}?appid={}'.format(NO2_POLLUTION_BASE_URL, WEATHER_API_KEY))
+        no2_pollution = json.loads(r.text)
+    except:
+        update.message.reply_text('Sorry, I cannot tell to you the current pollution level!')
+    else:
+        for read in co_pollution['data']:
+            if read['pressure']<215 and read['pressure']>0.00464:
+                co_pollution_message = 'CO pollution at the campus has level of {} '.format(read['value'])
+                break
+        for read in so2_pollution['data']:
+            if read['pressure']<215 and read['pressure']>0.00464:
+                so2_pollution_message = 'SO2 pollution at the campus has level of {} '.format(read['value'])
+                break
+        o3_pollution_message = 'O3 pollution at the campus has level of {} '.format(o3_pollution['data'])
+        no2_pollution_message = 'NO2 pollution at the campus has level of {} '.format(no2_pollution['data']['no2']['value'])
+        update.message.reply_text(co_pollution_message)
+        update.message.reply_text(so2_pollution_message)
+        update.message.reply_text(o3_pollution_message)
+        update.message.reply_text(no2_pollution_message)
