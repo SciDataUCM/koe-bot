@@ -75,7 +75,7 @@ def weather(bot, update):
         update.message.reply_text('Sorry, I cannot told to you the current weather!')
     else:
         K = 273.15
-        CURRENT_TEMP = weather['main']['temp'] - K
+        CURRENT_TEMP = "{0:.2f}".format(weather['main']['temp'] - K)
         weather_message = 'It is {}({}) at the campus! The current temperature is {} ºC'.format(
             weather['weather'][0]['main'],
             weather['weather'][0]['description'].title(),
