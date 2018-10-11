@@ -96,7 +96,7 @@ def weather(bot, update):
 def calendar(bot, update):
     def __get_calendar():
         calendar = requests.get('https://calendar.google.com/calendar/htmlembed?src=scidata@ucm.es&mode=AGENDA&ctz=Europe/Madrid')
-        calendar = BeautifulSoup(calendar.text, features='html5lib')
+        calendar = BeautifulSoup(calendar.text, features='html.parser')
         return calendar.find_all('div', {'class': 'view-container'}, limit=1)
 
     def __parse_calendar_date(calendar_date):
