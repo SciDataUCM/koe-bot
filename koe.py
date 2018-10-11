@@ -2,28 +2,18 @@
 # -*- coding: utf-8 -*-
 
 """ SciDataUCM's Telegram bot """
+import commands
 
 import telegram
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-import logging
 
-# Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
-logger = logging.getLogger(__name__)
+from logger import logger
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+
 
 # Configuration
 BOTNAME = 'KoeBot'
 with open('config.txt', 'r') as cfg:
     TOKEN = cfg.readline().rstrip('\n')
-
-# Command handlers
-def start(bot, update):
-    """Send a message when the command /start is issued."""
-    update.message.reply_text('¡Hola! Mi nombre es Koe 🐼, espero poder ayudarte.')
-
-def help(bot, update):
-    """Send a message when the command /help is issued."""
-    update.message.reply_text('Help!')
 
 def welcome(bot, update):
     logger.info("{}(username={}) joined chat {}".format((user.first_name for user in update.message.new_chat_members), (user.username for user in update.message.new_chat_members), update.message.chat_id))
@@ -32,7 +22,7 @@ def welcome(bot, update):
                                                             " que tal vez te interese 😊\n[Website🌐](https://scidataucm.org/) - [Twitter🐤](https://twitter.com/scidataucm)"
                                                             " - [Instagram📷](https://www.instagram.com/scidataucm/) - [Github💻](https://github.com/SciDataUCM)"
                                                             " - Email✉: scidata@ucm.es"), parse_mode=telegram.ParseMode.MARKDOWN)
- 
+
 def goodbye(bot, update):
     logger.info("{}(username={}) left chat {}".format(update.message.left_chat_member.first_name, update.message.left_chat_member.username, update.message.chat_id))
 
@@ -45,8 +35,6 @@ def empty_message(bot, update):
         if update.message.left_chat_member.username != BOTNAME:
             return goodbye(bot, update)
 
-def where(bot, update):
-    update.message.reply_text('Vivo en el despacho 120 de la Facultad de Informatica de la Universidad Complutense de Madrid ☺')
 
 def error(bot, update, error):
     """Log Errors caused by Updates."""
@@ -58,11 +46,11 @@ def main():
     dispatcher = updater.dispatcher
 
     # Adding every command handler
-    start_handler = CommandHandler('start', start)
+    start_handler = CommandHandler('start', commands.start)
     dispatcher.add_handler(start_handler)
-    help_handler = CommandHandler('help', help)
+    help_handler = CommandHandler('help', commands.help)
     dispatcher.add_handler(help_handler)
-    where_handler = CommandHandler('where', where)
+    where_handler = CommandHandler('where', commands.where)
     dispatcher.add_handler(where_handler)
     empty_handler = MessageHandler(Filters.status_update, empty_message)
     dispatcher.add_handler(empty_handler)
