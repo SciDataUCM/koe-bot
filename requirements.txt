@@ -4,3 +4,4 @@ requests==2.16.5
 cachetools
 pytest
 tgintegration
+beautifulsoup4==4.6.3
