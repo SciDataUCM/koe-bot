@@ -4,7 +4,7 @@ import cachetools
 import os
 import json
 
-from config import WEATHER_BASE_URL
+import config
 from logger import logger
 
 from bs4 import BeautifulSoup
@@ -56,8 +56,8 @@ def empty_message(bot, update):
 
 
 def where(bot, update):
-    update.message.reply_text('Vivo en el despacho 120 de la Facultad de Informatica de la Universidad Complutense de '
-                              'Madrid ☺')
+    update.message.reply_text('Vivo en el despacho 120 de la Facultad de Informatica de la Universidad Complutense de Madrid ☺')
+
 
 
 def collaborate(bot, update):
@@ -77,8 +77,6 @@ def membership(bot, update):
 # Cache the news source for 30 minutes to avoid getting throttled and improve
 # latency for repeated calls.
 THIRTY_MINUTES = 30 * 60
-
-
 @cachetools.cached(cachetools.TTLCache(maxsize=1, ttl=THIRTY_MINUTES))
 def query_news_source():
     news_source = "https://www.reddit.com/r/machinelearning/hot.json?count=5"
@@ -93,7 +91,6 @@ def news(bot, update):
         for item in response["data"]["children"]
     ]
     bot.send_message(chat_id=update.message.chat_id, text=("\n\n".join(formatted_links[:5])))
-
 
 def weather(bot, update):
     """Send a message when the command /weather is issued."""
@@ -120,6 +117,33 @@ def weather(bot, update):
             weather_message,
             temperature_message))
 
+def pollution(bot, update):
+    try:
+        r = requests.get('{}?appid={}'.format(CO_POLLUTION_BASE_URL, WEATHER_API_KEY))
+        co_pollution = json.loads(r.text)
+        r = requests.get('{}?appid={}'.format(O3_POLLUTION_BASE_URL, WEATHER_API_KEY))
+        o3_pollution = json.loads(r.text)
+        r = requests.get('{}?appid={}'.format(SO2_POLLUTION_BASE_URL, WEATHER_API_KEY))
+        so2_pollution = json.loads(r.text)
+        r = requests.get('{}?appid={}'.format(NO2_POLLUTION_BASE_URL, WEATHER_API_KEY))
+        no2_pollution = json.loads(r.text)
+    except:
+        update.message.reply_text('Sorry, I cannot tell to you the current pollution level!')
+    else:
+        for read in co_pollution['data']:
+            if read['pressure']<215 and read['pressure']>0.00464:
+                co_pollution_message = 'CO pollution at the campus has level of {} '.format(read['value'])
+                break
+        for read in so2_pollution['data']:
+            if read['pressure']<215 and read['pressure']>0.00464:
+                so2_pollution_message = 'SO2 pollution at the campus has level of {} '.format(read['value'])
+                break
+        o3_pollution_message = 'O3 pollution at the campus has level of {} '.format(o3_pollution['data'])
+        no2_pollution_message = 'NO2 pollution at the campus has level of {} '.format(no2_pollution['data']['no2']['value'])
+        update.message.reply_text(co_pollution_message)
+        update.message.reply_text(so2_pollution_message)
+        update.message.reply_text(o3_pollution_message)
+        update.message.reply_text(no2_pollution_message)
 
 def calendar(bot, update):
     def __get_calendar():
