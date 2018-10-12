@@ -4,7 +4,7 @@ import cachetools
 import os
 import json
 
-import config
+from config import *
 from logger import logger
 
 from bs4 import BeautifulSoup
