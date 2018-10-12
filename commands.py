@@ -113,7 +113,7 @@ def weather(bot, update):
             TEMP_MAX,
             TEMP_MIN)
 
-        update.message.reply_text('{}\n{}\n\nFont: https://openweathermap.org'.format(
+        update.message.reply_text('{}\n{}\n'.format(
             weather_message,
             temperature_message))
 
