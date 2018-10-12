@@ -43,8 +43,8 @@ def main():
     dispatcher.add_handler(collaborate_handler)
     membership_handler = CommandHandler('membership', commands.membership)
     dispatcher.add_handler(membership_handler)
-    weather_handler = CommandHandler('weather', commands.weather)
-    dispatcher.add_handler(weather_handler)
+    calendar_command = CommandHandler('calendar', commands.calendar)
+    dispatcher.add_handler(calendar_command)
 
     # log all errors
     dispatcher.add_error_handler(error)
