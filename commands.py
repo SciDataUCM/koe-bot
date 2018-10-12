@@ -4,7 +4,7 @@ import cachetools
 import os
 import json
 
-from config import WEATHER_BASE_URL
+import config
 from logger import logger
 
 from bs4 import BeautifulSoup
