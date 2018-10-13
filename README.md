@@ -3,6 +3,11 @@
 </p>
 
 [![Build Status](https://travis-ci.org/SciDataUCM/koe-bot.svg?branch=master)](https://travis-ci.org/SciDataUCM/koe-bot)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![GitHub license](https://img.shields.io/github/license/SciDataUCM/koe-bot.svg)](https://github.com/SciDataUCM/koe-bot/blob/master/LICENSE)
+[![Language](https://img.shields.io/badge/language-python-blue.svg)](https://www.python.org/)
+
+
 
 ## Who is Koe 🐨
 
