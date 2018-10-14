@@ -45,6 +45,8 @@ def main():
     dispatcher.add_handler(membership_handler)
     calendar_command = CommandHandler('calendar', commands.calendar)
     dispatcher.add_handler(calendar_command)
+    social_command = CommandHandler('social', commands.social)
+    dispatcher.add_handler(social_command)
 
     # log all errors
     dispatcher.add_error_handler(error)
