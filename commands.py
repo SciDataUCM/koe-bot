@@ -41,12 +41,10 @@ def welcome(bot, update):
 
 def social(bot, update):
     social_media = ["https://github.com/SciDataUCM", "https://twitter.com/scidataucm", "https://www.instagram.com/scidataucm/", "scidata@ucm.es"]
-    bot.send_message(chat_id=update.message.chat_id, text=("SciDataUCM Social Profiles:\n"
-                                                           "[Github💻]({})\n"
-                                                           "[Twitter🐤]({})\n"
+    bot.send_message(chat_id=update.message.chat_id, text=("SciDataUCM Social Profiles:\n[Github💻]({})\n[Twitter🐤]({})\n"
                                                            "[Instagram📷]({})\n"
                                                            " - Email ✉: {}").format(social_media[0], social_media[1], social_media[2], social_media[3]),
-                     parse_mode=telegram.ParseMode.HTML)
+                     parse_mode=telegram.ParseMode.MARKDOWN)
 
 def goodbye(bot, update):
     logger.info("{}(username={}) left chat {}".format(update.message.left_chat_member.first_name,
