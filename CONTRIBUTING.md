@@ -24,6 +24,8 @@ In general, we follow the "fork-and-pull" Git workflow.
 - Don't forget to delete your api keys from your code before uploading it, leave the api keys references as they were before you started working on the code.
 - Every Pull Request must have a title.
 - Every Pull Request must have a description.
+- Every Pull Request must refer to an existing issue. If you want to implement some functionality which doesn't have any issue open discussing it, open a new one and discuss with the maintainers before submiting your pull request.
+- Check previous open Pull Request before making a new one, as yours may be a duplicate.
 - Write the title and description of what you have done in the imperative mode, that is as if you were commanding someone. 
     - ✔ **DO**: Start the line with "Fix", "Add", "Change". 
     - ❌ **DON'T**: Start with "Fixed", "Added", "Adding", "Changed".
