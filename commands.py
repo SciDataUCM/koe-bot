@@ -40,15 +40,12 @@ def welcome(bot, update):
                      parse_mode=telegram.ParseMode.MARKDOWN)
 
 def social(bot, update):
-    social_media = [["Alberto Pastor Moreno", "https://github.com/albertopastormr", "https://www.linkedin.com/in/albertopastormr/", "https://twitter.com/albertopastormr"],
-                    ["Ivan Fermena", "https://github.com/ivanfermena", "https://www.linkedin.com/in/ivanfermena/", "https://twitter.com/ivanf3rmena"],
-                    ["Manuel Monforte", "https://github.com/manumonforte", "https://www.linkedin.com/in/manuel-monforte-escobar-a58b69166/", "https://twitter.com/manumonforte6"],
-                    ["Gerardo Parra", "https://github.com/gprossignoli", "https://www.linkedin.com/in/gerardo-parra-rossignoli/", "https://twitter.com/gp_rossignoli"]]
-    for idx in range(len(social_media)):
-        bot.send_message(chat_id=update.message.chat_id, text=("{} Social:\n"
+    social_media = ["https://github.com/SciDataUCM", "https://twitter.com/scidataucm", "https://www.instagram.com/scidataucm/", "scidata@ucm.es"]
+    bot.send_message(chat_id=update.message.chat_id, text=("SciDataUCM Social Profiles:\n"
                                                            "[Github💻]({})\n"
-                                                           "[LinkedIn🌐]({})\n"
-                                                           "[Twitter🐤]({})").format(social_media[idx][0], social_media[idx][1], social_media[idx][2], social_media[idx][3]),
+                                                           "[Twitter🐤]({})\n"
+                                                           "[Instagram📷]({})\n"
+                                                           " - Email ✉: {}").format(social_media[0], social_media[1], social_media[2], social_media[3]),
                      parse_mode=telegram.ParseMode.HTML)
 
 def goodbye(bot, update):
