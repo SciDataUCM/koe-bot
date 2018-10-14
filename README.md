@@ -23,6 +23,21 @@ Just [open a conversation with Koe](https://t.me/KoeBot).
 
 Koe uses the [python-telegram-bot API](https://python-telegram-bot.org/) to communicate with Telegram servers and [open-weather-map](https://openweathermap.org/) to implement `/weather`.
 
+## Running KoeBot locally 🏠
+
+Clone this repository by running the following command in a terminal capable of running _git_: `https://github.com/SciDataUCM/koe-bot.git`.
+
+
+You will need to create a bot following [Telegram Bots Guide]() in order to use a personal api key and a botname to run this code locally.
+
+Once you have an api key (_token_) and a botname, you should modify `BOTNAME` and `TOKEN` from `koe.py`.
+
+Install all the requirements by following [the guide below](https://github.com/SciDataUCM/koe-bot#requirements-%EF%B8%8F).
+
+Run `koe.py` by running the following command in a terminal capable of running _python_: `python koe.py`. Now the bot should be running so don't stop the execution / don't close the terminal which is running it.
+
+Open a conversation with your bot navigating to the link `https://t.me/BOTNAME` changing `BOTNAME` with your botname.
+
 ## Requirements ⚙️
 
 Besides [Python 3.6](https://www.python.org/downloads/) we will be using the following packages:
