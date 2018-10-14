@@ -20,6 +20,8 @@ In general, we follow the "fork-and-pull" Git workflow.
 
 ## Rules
 
+- **IMPORTANT!** Test your code locally! Follow the steps 'Running KoeBot locally' found at [README](https://github.com/SciDataUCM/koe-bot/blob/master/README.md).
+- Don't forget to delete your api keys from your code before uploading it, leave the api keys references as they were before you started working on the code.
 - Every Pull Request must have a title.
 - Every Pull Request must have a description.
 - Write the title and description of what you have done in the imperative mode, that is as if you were commanding someone. 
