@@ -135,13 +135,13 @@ def weather(bot, update):
         weather_message = 'It is {}({}) at the campus! The current temperature is {} ºC'.format(
             weather['weather'][0]['main'],
             weather['weather'][0]['description'].title(),
-            CURRENT_TEMP)
+            CURRENT_TEMP
+        )
 
-        TEMP_MIN = weather['main']['temp_min'] - K
-        TEMP_MAX = weather['main']['temp_max'] - K
         temperature_message = 'The MAX and MIN temperature are {} ºC and {} ºC, respectively.'.format(
-            TEMP_MAX,
-            TEMP_MIN)
+            weather['main']['temp_max'] - K,
+            weather['main']['temp_min'] - K
+        )
 
         update.message.reply_text('{}\n{}\n'.format(
             weather_message,
@@ -173,8 +173,7 @@ def pollution(bot, update):
 
 def calendar(bot, update):
     def __get_calendar():
-        calendar = requests.get('https://calendar.google.com/calendar/'
-                                'htmlembed?src=scidata@ucm.es&mode=AGENDA&ctz=Europe/Madrid')
+        calendar = requests.get('https://calendar.google.com/calendar/htmlembed?src=scidata@ucm.es&mode=AGENDA&ctz=Europe/Madrid')
         calendar = BeautifulSoup(calendar.text, features='html.parser')
         return calendar.find_all('div', {'class': 'view-container'}, limit=1)
 
@@ -200,3 +199,14 @@ def calendar(bot, update):
         return response
 
     update.message.reply_text(__get_events())
+
+def learn(bot, update):
+    bot.send_message(
+        chat_id=update.message.chat_id,
+        text=(
+            "Data Science:\n"
+            "[For begginers](https://github.com/amrrs/For-Data-Science-Beginners)\n"
+            "[Good tutorials + books&vides](http://jasdumas.com/ds-resources/)\n"
+            "[Learn AI with GOOGLE](https://ai.google/education/)\n"
+        ),
+        parse_mode=telegram.ParseMode.MARKDOWN)

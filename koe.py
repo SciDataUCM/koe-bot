@@ -31,6 +31,7 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('membership', commands.membership))
     updater.dispatcher.add_handler(CommandHandler('calendar', commands.calendar))
     updater.dispatcher.add_handler(CommandHandler('social', commands.social))
+    updater.dispatcher.add_handler(CommandHandler('learn', commands.learn))
 
     # log all errors
     updater.dispatcher.add_error_handler(error)
