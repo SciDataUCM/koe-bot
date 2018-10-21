@@ -25,30 +25,43 @@ def help(bot, update):
 
 
 def welcome(bot, update):
-    logger.info("{}(username={}) joined chat {}".format((user.first_name for user in update.message.new_chat_members),
-                                                        (user.username for user in update.message.new_chat_members),
-                                                        update.message.chat_id))
+    logger.info("{}(username={}) joined chat {}".format((
+        user.first_name for user in update.message.new_chat_members),
+        (user.username for user in update.message.new_chat_members),
+        update.message.chat_id
+    ))
 
-    bot.send_message(chat_id=update.message.chat_id, text=("¡Bienvenid@ ! Mi nombre es Koe 🐼 Aquí tienes información "
-                                                           "sobre SciDataUCM "
-                                                           "que tal vez te interese 😊\n[Website🌐]"
-                                                           "(https://scidataucm.org/) - [Twitter🐤]("
-                                                           "https://twitter.com/scidataucm) "
-                                                           "- [Instagram📷](https://www.instagram.com/scidataucm/) - "
-                                                           "[Github💻](https://github.com/SciDataUCM) "
-                                                           " - Email✉: scidata@ucm.es"),
-                     parse_mode=telegram.ParseMode.MARKDOWN)
+    bot.send_message(
+        chat_id=update.message.chat_id,
+        text=(
+            """¡Bienvenid@ ! Mi nombre es Koe 🐼 Aquí tienes información
+            sobre SciDataUCM
+            que tal vez te interese 😊\n[Website🌐]
+            (https://scidataucm.org/) - [Twitter🐤](
+            https://twitter.com/scidataucm)
+            - [Instagram📷](https://www.instagram.com/scidataucm/) -
+            [Github💻](https://github.com/SciDataUCM)
+             - Email✉: scidata@ucm.es"""
+        ),
+        parse_mode=telegram.ParseMode.MARKDOWN)
 
 def social(bot, update):
     social_media = ["https://github.com/SciDataUCM", "https://twitter.com/scidataucm", "https://www.instagram.com/scidataucm/", "scidata@ucm.es"]
-    bot.send_message(chat_id=update.message.chat_id, text=("SciDataUCM Social Profiles:\n[Github💻]({})\n[Twitter🐤]({})\n"
-                                                           "[Instagram📷]({})\n"
-                                                           " - Email ✉: {}").format(social_media[0], social_media[1], social_media[2], social_media[3]),
-                     parse_mode=telegram.ParseMode.MARKDOWN)
+    bot.send_message(
+        chat_id=update.message.chat_id,
+        text=(
+            """SciDataUCM Social Profiles:\n[Github💻]({})\n[Twitter🐤]({})\n
+            [Instagram📷]({})\n
+             - Email ✉: {}""").format(*social_media[:4]),
+        parse_mode=telegram.ParseMode.MARKDOWN
+    )
 
 def goodbye(bot, update):
-    logger.info("{}(username={}) left chat {}".format(update.message.left_chat_member.first_name,
-                                                      update.message.left_chat_member.username, update.message.chat_id))
+    logger.info("{}(username={}) left chat {}".format(
+        update.message.left_chat_member.first_name,
+        update.message.left_chat_member.username,
+        update.message.chat_id
+    ))
 
     bot.send_message(chat_id=update.message.chat_id, text="¡Hasta pronto...!😥")
 
@@ -67,17 +80,28 @@ def where(bot, update):
 
 
 def collaborate(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text=("For the purpose of collaboration follow this link:"
-                                                           "- [Link🌐](https://docs.google.com/forms/d/e"
-                                                           "/1FAIpQLSeMJnOmN6xRua5CtTnwbYIv83gSL_EsjNUkNvV0HzKe82OAEQ"
-                                                           "/viewform)"), parse_mode=telegram.ParseMode.MARKDOWN)
+    bot.send_message(
+        chat_id=update.message.chat_id,
+        text=(
+            "For the purpose of collaboration follow this link:"
+            "- [Link🌐](https://docs.google.com/forms/d/e"
+            "/1FAIpQLSeMJnOmN6xRua5CtTnwbYIv83gSL_EsjNUkNvV0HzKe82OAEQ"
+            "/viewform)"
+        ),
+        parse_mode=telegram.ParseMode.MARKDOWN)
 
 
 def membership(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text=("New members should register at this link:"
-                                                           "[Link🌐](https://docs.google.com/forms/d/e"
-                                                           "/1FAIpQLSdKRf8Lah2-2LFcUv3TIIcKDUhtBv1WdrdfQjwf4M0-XChRxA"
-                                                           "/viewform)"), parse_mode=telegram.ParseMode.MARKDOWN)
+    bot.send_message(
+        chat_id=update.message.chat_id,
+        text=(
+            "New members should register at this link:"
+            "[Link🌐](https://docs.google.com/forms/d/e"
+            "/1FAIpQLSdKRf8Lah2-2LFcUv3TIIcKDUhtBv1WdrdfQjwf4M0-XChRxA"
+            "/viewform)"
+        ),
+        parse_mode=telegram.ParseMode.MARKDOWN
+    )
 
 
 # Cache the news source for 30 minutes to avoid getting throttled and improve
@@ -111,13 +135,13 @@ def weather(bot, update):
         weather_message = 'It is {}({}) at the campus! The current temperature is {} ºC'.format(
             weather['weather'][0]['main'],
             weather['weather'][0]['description'].title(),
-            CURRENT_TEMP)
+            CURRENT_TEMP
+        )
 
-        TEMP_MIN = weather['main']['temp_min'] - K
-        TEMP_MAX = weather['main']['temp_max'] - K
         temperature_message = 'The MAX and MIN temperature are {} ºC and {} ºC, respectively.'.format(
-            TEMP_MAX,
-            TEMP_MIN)
+            weather['main']['temp_max'] - K,
+            weather['main']['temp_min'] - K
+        )
 
         update.message.reply_text('{}\n{}\n'.format(
             weather_message,
@@ -125,14 +149,10 @@ def weather(bot, update):
 
 def pollution(bot, update):
     try:
-        r = requests.get('{}?appid={}'.format(CO_POLLUTION_BASE_URL, WEATHER_API_KEY))
-        co_pollution = json.loads(r.text)
-        r = requests.get('{}?appid={}'.format(O3_POLLUTION_BASE_URL, WEATHER_API_KEY))
-        o3_pollution = json.loads(r.text)
-        r = requests.get('{}?appid={}'.format(SO2_POLLUTION_BASE_URL, WEATHER_API_KEY))
-        so2_pollution = json.loads(r.text)
-        r = requests.get('{}?appid={}'.format(NO2_POLLUTION_BASE_URL, WEATHER_API_KEY))
-        no2_pollution = json.loads(r.text)
+        co_pollution = json.loads(requests.get('{}?appid={}'.format(CO_POLLUTION_BASE_URL, WEATHER_API_KEY)).text)
+        o3_pollution = json.loads(requests.get('{}?appid={}'.format(O3_POLLUTION_BASE_URL, WEATHER_API_KEY)).text)
+        so2_pollution = json.loads(requests.get('{}?appid={}'.format(SO2_POLLUTION_BASE_URL, WEATHER_API_KEY)).text)
+        no2_pollution = json.loads(requests.get('{}?appid={}'.format(NO2_POLLUTION_BASE_URL, WEATHER_API_KEY)).text)
     except:
         update.message.reply_text('Sorry, I cannot tell to you the current pollution level!')
     else:
@@ -153,8 +173,7 @@ def pollution(bot, update):
 
 def calendar(bot, update):
     def __get_calendar():
-        calendar = requests.get('https://calendar.google.com/calendar/'
-                                'htmlembed?src=scidata@ucm.es&mode=AGENDA&ctz=Europe/Madrid')
+        calendar = requests.get('https://calendar.google.com/calendar/htmlembed?src=scidata@ucm.es&mode=AGENDA&ctz=Europe/Madrid')
         calendar = BeautifulSoup(calendar.text, features='html.parser')
         return calendar.find_all('div', {'class': 'view-container'}, limit=1)
 
@@ -180,3 +199,14 @@ def calendar(bot, update):
         return response
 
     update.message.reply_text(__get_events())
+
+def learn(bot, update):
+    bot.send_message(
+        chat_id=update.message.chat_id,
+        text=(
+            "Data Science:\n"
+            "[For begginers](https://github.com/amrrs/For-Data-Science-Beginners)\n"
+            "[Good tutorials + books&vides](http://jasdumas.com/ds-resources/)\n"
+            "[Learn AI with GOOGLE](https://ai.google/education/)\n"
+        ),
+        parse_mode=telegram.ParseMode.MARKDOWN)
