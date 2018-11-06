@@ -1,6 +1,6 @@
 # python-telegram-bot API install 
 python-telegram-bot==7.0.1
-requests==2.16.5
+requests>=2.20.0
 cachetools
 pytest
 tgintegration
