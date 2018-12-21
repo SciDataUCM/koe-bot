@@ -25,7 +25,7 @@ Koe uses the [python-telegram-bot API](https://python-telegram-bot.org/) to comm
 
 ## Running KoeBot locally 🏠
 
-Clone this repository by running the following command in a terminal capable of running _git_: `https://github.com/SciDataUCM/koe-bot.git`.
+Clone this repository by running the following command in a terminal capable of running _git_: `git clone https://github.com/SciDataUCM/koe-bot.git`.
 
 
 You need to create a bot following [Telegram Bots Guide](https://core.telegram.org/bots) in order to use a personal api key and a botname to run this code locally.
