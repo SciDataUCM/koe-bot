@@ -2,7 +2,6 @@
 python-telegram-bot==7.0.1
 requests>=2.20.0
 cachetools
-python-logilab-common
 pytest
 tgintegration
 beautifulsoup4==4.6.3
