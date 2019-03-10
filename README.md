@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Koe!" src="koe.png" width="400" height="400">
+  <img alt="Koe!" src="koe.png" width="380" height="380">
 </p>
 
 [![Build Status](https://travis-ci.org/SciDataUCM/koe-bot.svg?branch=master)](https://travis-ci.org/SciDataUCM/koe-bot)
