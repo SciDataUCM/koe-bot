@@ -138,7 +138,7 @@ def weather(bot, update):
             CURRENT_TEMP
         )
 
-        temperature_message = 'La temperatura MAX y MIN son {0:.2f} ºC y {} ºC, respectivamente.'.format(
+        temperature_message = 'La temperatura MAX y MIN son {0:.2f} ºC y {1:.2f} ºC, respectivamente.'.format(
             weather['main']['temp_max'] - K,
             weather['main']['temp_min'] - K
         )
