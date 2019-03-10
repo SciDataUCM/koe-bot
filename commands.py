@@ -50,7 +50,7 @@ def social(bot, update):
     bot.send_message(
         chat_id=update.message.chat_id,
         text=(
-            """SciDataUCM Social Profiles:\n[Github💻]({})\n[Twitter🐤]({})\n
+            """Redes sociales de SciDataUCM:\n[Github💻]({})\n[Twitter🐤]({})\n
             [Instagram📷]({})\n
              - Email ✉: {}""").format(*social_media[:4]),
         parse_mode=telegram.ParseMode.MARKDOWN
@@ -83,7 +83,7 @@ def collaborate(bot, update):
     bot.send_message(
         chat_id=update.message.chat_id,
         text=(
-            "For the purpose of collaboration follow this link:"
+            "Para colaborar con SciDataUCM accede al siguiente enlace:"
             "- [Link🌐](https://docs.google.com/forms/d/e"
             "/1FAIpQLSeMJnOmN6xRua5CtTnwbYIv83gSL_EsjNUkNvV0HzKe82OAEQ"
             "/viewform)"
@@ -95,7 +95,7 @@ def membership(bot, update):
     bot.send_message(
         chat_id=update.message.chat_id,
         text=(
-            "New members should register at this link:"
+            "Para ser miembro de SciDataUCM rellena el siguiente formulario:"
             "[Link🌐](https://docs.google.com/forms/d/e"
             "/1FAIpQLSdKRf8Lah2-2LFcUv3TIIcKDUhtBv1WdrdfQjwf4M0-XChRxA"
             "/viewform)"
@@ -128,17 +128,17 @@ def weather(bot, update):
         r = requests.get('{}&appid={}'.format(WEATHER_BASE_URL, WEATHER_API_KEY))
         weather = json.loads(r.text)
     except:
-        update.message.reply_text('Sorry, I cannot told to you the current weather!')
+        update.message.reply_text('Lo siento, ¡desconozco el tiempo atmosférico actual!')
     else:
         K = 273.15
         CURRENT_TEMP = "{0:.2f}".format(weather['main']['temp'] - K)
-        weather_message = 'It is {}({}) at the campus! The current temperature is {} ºC'.format(
+        weather_message = '{}({}) en la facultad! La temperatura actual es {} ºC'.format(
             weather['weather'][0]['main'],
             weather['weather'][0]['description'].title(),
             CURRENT_TEMP
         )
 
-        temperature_message = 'The MAX and MIN temperature are {} ºC and {} ºC, respectively.'.format(
+        temperature_message = 'La temperatura MAX y MIN son {} ºC and {} ºC, respectivamente.'.format(
             weather['main']['temp_max'] - K,
             weather['main']['temp_min'] - K
         )
@@ -154,18 +154,18 @@ def pollution(bot, update):
         so2_pollution = json.loads(requests.get('{}?appid={}'.format(SO2_POLLUTION_BASE_URL, WEATHER_API_KEY)).text)
         no2_pollution = json.loads(requests.get('{}?appid={}'.format(NO2_POLLUTION_BASE_URL, WEATHER_API_KEY)).text)
     except:
-        update.message.reply_text('Sorry, I cannot tell to you the current pollution level!')
+        update.message.reply_text('Lo siento, ¡desconozco el nivel de contaminación actual!')
     else:
         for read in co_pollution['data']:
             if read['pressure']<215 and read['pressure']>0.00464:
-                co_pollution_message = 'CO pollution at the campus has level of {} '.format(read['value'])
+                co_pollution_message = 'Polución de CO en la facultad tiene un nivel de {} '.format(read['value'])
                 break
         for read in so2_pollution['data']:
             if read['pressure']<215 and read['pressure']>0.00464:
-                so2_pollution_message = 'SO2 pollution at the campus has level of {} '.format(read['value'])
+                so2_pollution_message = 'Polución de SO2 en la facultad tiene un nivel de {} '.format(read['value'])
                 break
-        o3_pollution_message = 'O3 pollution at the campus has level of {} '.format(o3_pollution['data'])
-        no2_pollution_message = 'NO2 pollution at the campus has level of {} '.format(no2_pollution['data']['no2']['value'])
+        o3_pollution_message = 'Polución de O3 en la facultad tiene un nivel de {} '.format(o3_pollution['data'])
+        no2_pollution_message = 'Polución de NO2 en la facultad tiene un nivel de {} '.format(no2_pollution['data']['no2']['value'])
         update.message.reply_text(co_pollution_message)
         update.message.reply_text(so2_pollution_message)
         update.message.reply_text(o3_pollution_message)
@@ -195,7 +195,7 @@ def calendar(bot, update):
                     events.append('* {0} - {1}'.format(time, title))
                 response = response + '{}:\n\n{}\n'.format(day, '\n'.join(events))
         else:
-            return 'No scheduled events!'
+            return '¡No hay eventos programados!'
         return response
 
     update.message.reply_text(__get_events())
