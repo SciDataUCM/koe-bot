@@ -8,9 +8,10 @@ from config import *
 from logger import logger
 
 from bs4 import BeautifulSoup
+from datetime import datetime
 
-BOTNAME = 'KoeBot'
-WEATHER_API_KEY = os.environ['WEATHER_API_KEY']
+BOTNAME = 'experiment'
+WEATHER_API_KEY = '47fc9a1a1e552b8f4b742bcf406fc830'
 
 
 # Command handlers
@@ -210,3 +211,31 @@ def learn(bot, update):
             "[Learn AI with GOOGLE](https://ai.google/education/)\n"
         ),
         parse_mode=telegram.ParseMode.MARKDOWN)
+
+def forecast(bot, update):
+    """Send a message when the command /weather is issued."""
+    try:
+        r = requests.get('{}&appid={}'.format(FORECAST_BASE_URL, WEATHER_API_KEY))
+        weather = json.loads(r.text)
+    except:
+        update.message.reply_text('Lo siento, ¡desconozco el tiempo atmosférico actual!')
+    else:
+        days = []
+        for i in range(weather['cnt']):
+            date_time_str = weather['list'][i]['dt_txt']
+            date_time = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
+            d = date_time.strftime("%d")
+            if(d not in days):
+                days.append(d)
+        keyboard = [[]]
+
+        for x in days:
+            print(x)
+            keyboard_button = telegram.InlineKeyboardButton("dia: {0}".format(days(x)), callback_data=days(x) )
+            keyboard[0].append(keyboard_button)
+		
+        reply_markup = telegram.InlineKeyboardMarkup(keyboard)
+        update.message.reply_text("Indicame que dia quieres: {0} - {1}".format([days[i] for i in (0, -1)][0] , [days[i] for i in (0, -1)][-1]) , reply_markup=reply_markup)
+        
+            
+             

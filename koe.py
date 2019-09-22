@@ -9,8 +9,8 @@ import commands
 from logger import logger
 
 # Configuration
-BOTNAME = 'KoeBot'
-TOKEN = os.environ['KOE_TOKEN']
+BOTNAME = 'experiment'
+TOKEN = '682028880:AAFSJjYfITyFUOAGqQVlYvCvUATJFgCd2os'
 
 def error(bot, update, error):
     """Log Errors caused by Updates."""
@@ -32,6 +32,7 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('calendar', commands.calendar))
     updater.dispatcher.add_handler(CommandHandler('social', commands.social))
     updater.dispatcher.add_handler(CommandHandler('learn', commands.learn))
+    updater.dispatcher.add_handler(CommandHandler('forecast', commands.forecast))
 
     # log all errors
     updater.dispatcher.add_error_handler(error)
