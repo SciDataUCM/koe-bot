@@ -227,15 +227,22 @@ def forecast(bot, update):
             d = date_time.strftime("%d")
             if(d not in days):
                 days.append(d)
-        keyboard = [[]]
+        keyboard = []
+        keyboard_inside = []
 
         for x in days:
             print(x)
-            keyboard_button = telegram.InlineKeyboardButton("dia: {0}".format(days(x)), callback_data=days(x) )
-            keyboard[0].append(keyboard_button)
-		
+            keyboard_button = telegram.InlineKeyboardButton("dia: {0}".format(x), callback_data=x )
+            keyboard_inside.append(keyboard_button)
+        
+        keyboard.append(keyboard_inside)
         reply_markup = telegram.InlineKeyboardMarkup(keyboard)
         update.message.reply_text("Indicame que dia quieres: {0} - {1}".format([days[i] for i in (0, -1)][0] , [days[i] for i in (0, -1)][-1]) , reply_markup=reply_markup)
         
+
+def forecast_response(bot, update):
+    query = update.callback_query
+    print(query)
+    query.message.reply_text("selected option: {}".format(query.data))
             
              

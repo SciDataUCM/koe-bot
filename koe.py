@@ -3,7 +3,7 @@
 
 """ SciDataUCM's Telegram bot """
 
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 import os
 import commands
 from logger import logger
@@ -33,6 +33,7 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('social', commands.social))
     updater.dispatcher.add_handler(CommandHandler('learn', commands.learn))
     updater.dispatcher.add_handler(CommandHandler('forecast', commands.forecast))
+    updater.dispatcher.add_handler(CallbackQueryHandler(commands.forecast_response)) #this is for the bot to notice wich forecast button was pressed
 
     # log all errors
     updater.dispatcher.add_error_handler(error)
