@@ -212,37 +212,42 @@ def learn(bot, update):
         ),
         parse_mode=telegram.ParseMode.MARKDOWN)
 
-def forecast(bot, update):
-    """Send a message when the command /weather is issued."""
-    try:
-        r = requests.get('{}&appid={}'.format(FORECAST_BASE_URL, WEATHER_API_KEY))
-        weather = json.loads(r.text)
-    except:
-        update.message.reply_text('Lo siento, ¡desconozco el tiempo atmosférico actual!')
-    else:
-        days = []
-        for i in range(weather['cnt']):
-            date_time_str = weather['list'][i]['dt_txt']
-            date_time = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
-            d = date_time.strftime("%d")
-            if(d not in days):
-                days.append(d)
-        keyboard = []
-        keyboard_inside = []
+class forecast:
 
-        for x in days:
-            print(x)
-            keyboard_button = telegram.InlineKeyboardButton("dia: {0}".format(x), callback_data=x )
-            keyboard_inside.append(keyboard_button)
-        
-        keyboard.append(keyboard_inside)
-        reply_markup = telegram.InlineKeyboardMarkup(keyboard)
-        update.message.reply_text("Indicame que dia quieres: {0} - {1}".format([days[i] for i in (0, -1)][0] , [days[i] for i in (0, -1)][-1]) , reply_markup=reply_markup)
-        
+    def __init__(self):
+        self.w = 0
 
-def forecast_response(bot, update):
-    query = update.callback_query
-    print(query)
-    query.message.reply_text("selected option: {}".format(query.data))
-            
+    """Send a message to select between dates when the command /forecast is issued."""	
+    def forecast(self,bot, update):
+        try:
+            r = requests.get('{}&appid={}'.format(FORECAST_BASE_URL, WEATHER_API_KEY))
+            weather = json.loads(r.text)
+            self.w = weather
+        except:
+            update.message.reply_text('Lo siento, ¡desconozco el tiempo atmosférico actual!')
+        else:
+            days = []
+            for i in range(weather['cnt']):
+                date_time_str = weather['list'][i]['dt_txt']
+                date_time = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
+                d = date_time.strftime("%d")
+                if(d not in days):
+                     days.append(d)
+            keyboard = []
+            keyboard_inside = []
+
+            for x in days:
+                print(x)
+                keyboard_button = telegram.InlineKeyboardButton("dia: {0}".format(x), callback_data=x )
+                keyboard_inside.append(keyboard_button)
+        
+            keyboard.append(keyboard_inside)
+            reply_markup = telegram.InlineKeyboardMarkup(keyboard)
+            update.message.reply_text("Indicame que dia quieres: {0} - {1}".format([days[i] for i in (0, -1)][0] , [days[i] for i in (0, -1)][-1]) , reply_markup=reply_markup)
+        
+    """handle the reply of the button selected, sended by the funcion above"""
+    def forecast_response(self, bot, update):
+        query = update.callback_query
+        query.message.reply_text("selected option: {}".format(query.data))
+        print(self.w)    
              
