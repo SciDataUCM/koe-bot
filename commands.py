@@ -213,6 +213,8 @@ def learn(bot, update):
         parse_mode=telegram.ParseMode.MARKDOWN)
 
 class forecast:
+    
+
 
     def __init__(self):
         self.w = 0
@@ -236,7 +238,7 @@ class forecast:
             keyboard_inside = []
 
             for x in days:
-                print(x)
+                #print(x)
                 keyboard_button = telegram.InlineKeyboardButton("dia: {0}".format(x), callback_data=x )
                 keyboard_inside.append(keyboard_button)
         
@@ -253,9 +255,54 @@ class forecast:
         for i in range(self.w['cnt']):
 
             if(query.data in self.w['list'][i]['dt_txt']):
-                date_time_str = self.w['list'][i]['dt_txt']
+                weather = self.w['list'][i]
+                date_time_str = weather['dt_txt']
                 date_time = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
                 h = date_time.strftime("%H")                
-                temp = "{0:.2f}".format(self.w['list'][i]['main']['temp'] -K)
-                msg.append("hora: {} , tiempo: {} , temperatura: {} \n".format(h, self.w['list'][i]['weather'][0]['description'] , temp ))
+                temp = "{0:.2f}".format(weather['main']['temp'] -K)
+                weather_id = weather['weather'][0]['id'] #for the icons
+                #print(weather_id)
+                icon = self.getEmoji(weather_id)
+                msg.append("hora: {} , tiempo: {}{} , temperatura: {} ºC \n".format(h, weather['weather'][0]['description'] , icon , temp ))
         query.edit_message_text(''.join(msg))
+
+    def getEmoji(self, weatherID):
+
+        #handling emojis: credit to: https://github.com/mustafababil/Telegram-Weather-Bot/blob/master/responseController.py#L11
+
+        thunderstorm = u'\U0001F4A8'    # Code: 200's, 900, 901, 902, 905
+        drizzle = u'\U0001F4A7'         # Code: 300's
+        rain = u'\U00002614'            # Code: 500's
+        snowflake = u'\U00002744'       # Code: 600's snowflake
+        snowman = u'\U000026C4'         # Code: 600's snowman, 903, 906
+        atmosphere = u'\U0001F301'      # Code: 700's foogy
+        clearSky = u'\U00002600'        # Code: 800 clear sky
+        fewClouds = u'\U000026C5'       # Code: 801 sun behind clouds
+        clouds = u'\U00002601'          # Code: 802-803-804 clouds general
+        hot = u'\U0001F525'             # Code: 904
+        defaultEmoji = u'\U0001F300'    # default emojis
+
+        if weatherID:
+            if str(weatherID)[0] == '2' or weatherID == 900 or weatherID==901 or weatherID==902 or weatherID==905:
+                return thunderstorm
+            elif str(weatherID)[0] == '3':
+                return drizzle
+            elif str(weatherID)[0] == '5':
+                return rain
+            elif str(weatherID)[0] == '6' or weatherID==903 or weatherID== 906:
+                return snowflake + ' ' + snowman
+            elif str(weatherID)[0] == '7':
+                return atmosphere
+            elif weatherID == 800:
+                return clearSky
+            elif weatherID == 801:
+                return fewClouds
+            elif weatherID==802 or weatherID==803 or weatherID==803:
+                return clouds
+            elif weatherID == 904:
+                 return hot
+            else:
+                 return defaultEmoji    # Default emoji
+
+        else:
+             return defaultEmoji   # Default emoji
