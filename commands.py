@@ -216,7 +216,6 @@ class forecast:
 
     def __init__(self):
         self.w = 0
-
     """Send a message to select between dates when the command /forecast is issued."""	
     def forecast(self,bot, update):
         try:
@@ -247,7 +246,16 @@ class forecast:
         
     """handle the reply of the button selected, sended by the funcion above"""
     def forecast_response(self, bot, update):
+        K = 273.15
         query = update.callback_query
-        query.message.reply_text("selected option: {}".format(query.data))
-        print(self.w)    
-             
+        #query.message.reply_text("selected option: {}".format(query.data))
+        msg = ["PREVISION DEL TIEMPO PARA EL DIA: {} \n".format(query.data)]
+        for i in range(self.w['cnt']):
+
+            if(query.data in self.w['list'][i]['dt_txt']):
+                date_time_str = self.w['list'][i]['dt_txt']
+                date_time = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
+                h = date_time.strftime("%H")                
+                temp = "{0:.2f}".format(self.w['list'][i]['main']['temp'] -K)
+                msg.append("hora: {} , tiempo: {} , temperatura: {} \n".format(h, self.w['list'][i]['weather'][0]['description'] , temp ))
+        query.edit_message_text(''.join(msg))
