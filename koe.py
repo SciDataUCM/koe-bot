@@ -3,14 +3,14 @@
 
 """ SciDataUCM's Telegram bot """
 
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 import os
 import commands
 from logger import logger
 
 # Configuration
-BOTNAME = 'KoeBot'
-TOKEN = os.environ['KOE_TOKEN']
+BOTNAME = 'experiment'
+TOKEN = '682028880:AAFSJjYfITyFUOAGqQVlYvCvUATJFgCd2os'
 
 def error(bot, update, error):
     """Log Errors caused by Updates."""
@@ -32,6 +32,9 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('calendar', commands.calendar))
     updater.dispatcher.add_handler(CommandHandler('social', commands.social))
     updater.dispatcher.add_handler(CommandHandler('learn', commands.learn))
+    forecast = commands.forecast()
+    updater.dispatcher.add_handler(CommandHandler('forecast', forecast.forecast))
+    updater.dispatcher.add_handler(CallbackQueryHandler(forecast.forecast_response)) #this is for the bot to notice wich forecast button was pressed
 
     # log all errors
     updater.dispatcher.add_error_handler(error)

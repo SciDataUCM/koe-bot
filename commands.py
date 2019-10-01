@@ -8,9 +8,10 @@ from config import *
 from logger import logger
 
 from bs4 import BeautifulSoup
+from datetime import datetime
 
-BOTNAME = 'KoeBot'
-WEATHER_API_KEY = os.environ['WEATHER_API_KEY']
+BOTNAME = 'experiment'
+WEATHER_API_KEY = '47fc9a1a1e552b8f4b742bcf406fc830'
 
 
 # Command handlers
@@ -210,3 +211,98 @@ def learn(bot, update):
             "[Learn AI with GOOGLE](https://ai.google/education/)\n"
         ),
         parse_mode=telegram.ParseMode.MARKDOWN)
+
+class forecast:
+    
+
+
+    def __init__(self):
+        self.w = 0
+    """Send a message to select between dates when the command /forecast is issued."""	
+    def forecast(self,bot, update):
+        try:
+            r = requests.get('{}&appid={}'.format(FORECAST_BASE_URL, WEATHER_API_KEY))
+            weather = json.loads(r.text)
+            self.w = weather
+        except:
+            update.message.reply_text('Lo siento, ¡desconozco el tiempo atmosférico actual!')
+        else:
+            days = []
+            for i in range(weather['cnt']):
+                date_time_str = weather['list'][i]['dt_txt']
+                date_time = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
+                d = date_time.strftime("%d")
+                if(d not in days):
+                     days.append(d)
+            keyboard = []
+            keyboard_inside = []
+
+            for x in days:
+                #print(x)
+                keyboard_button = telegram.InlineKeyboardButton("dia: {0}".format(x), callback_data=x )
+                keyboard_inside.append(keyboard_button)
+        
+            keyboard.append(keyboard_inside)
+            reply_markup = telegram.InlineKeyboardMarkup(keyboard)
+            update.message.reply_text("Indicame que dia quieres: {0} - {1}".format([days[i] for i in (0, -1)][0] , [days[i] for i in (0, -1)][-1]) , reply_markup=reply_markup)
+        
+    """handle the reply of the button selected, sended by the funcion above"""
+    def forecast_response(self, bot, update):
+        K = 273.15
+        query = update.callback_query
+        #query.message.reply_text("selected option: {}".format(query.data))
+        msg = ["PREVISION DEL TIEMPO PARA EL DIA: {} \n".format(query.data)]
+        for i in range(self.w['cnt']):
+
+            if(query.data in self.w['list'][i]['dt_txt']):
+                weather = self.w['list'][i]
+                date_time_str = weather['dt_txt']
+                date_time = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
+                h = date_time.strftime("%H")                
+                temp = "{0:.2f}".format(weather['main']['temp'] -K)
+                weather_id = weather['weather'][0]['id'] #for the icons
+                #print(weather_id)
+                icon = self.getEmoji(weather_id)
+                msg.append("hora: {} , tiempo: {}{} , temperatura: {} ºC \n".format(h, weather['weather'][0]['description'] , icon , temp ))
+        query.edit_message_text(''.join(msg))
+
+    def getEmoji(self, weatherID):
+
+        #handling emojis: credit to: https://github.com/mustafababil/Telegram-Weather-Bot/blob/master/responseController.py#L11
+
+        thunderstorm = u'\U0001F4A8'    # Code: 200's, 900, 901, 902, 905
+        drizzle = u'\U0001F4A7'         # Code: 300's
+        rain = u'\U00002614'            # Code: 500's
+        snowflake = u'\U00002744'       # Code: 600's snowflake
+        snowman = u'\U000026C4'         # Code: 600's snowman, 903, 906
+        atmosphere = u'\U0001F301'      # Code: 700's foogy
+        clearSky = u'\U00002600'        # Code: 800 clear sky
+        fewClouds = u'\U000026C5'       # Code: 801 sun behind clouds
+        clouds = u'\U00002601'          # Code: 802-803-804 clouds general
+        hot = u'\U0001F525'             # Code: 904
+        defaultEmoji = u'\U0001F300'    # default emojis
+
+        if weatherID:
+            if str(weatherID)[0] == '2' or weatherID == 900 or weatherID==901 or weatherID==902 or weatherID==905:
+                return thunderstorm
+            elif str(weatherID)[0] == '3':
+                return drizzle
+            elif str(weatherID)[0] == '5':
+                return rain
+            elif str(weatherID)[0] == '6' or weatherID==903 or weatherID== 906:
+                return snowflake + ' ' + snowman
+            elif str(weatherID)[0] == '7':
+                return atmosphere
+            elif weatherID == 800:
+                return clearSky
+            elif weatherID == 801:
+                return fewClouds
+            elif weatherID==802 or weatherID==803 or weatherID==803:
+                return clouds
+            elif weatherID == 904:
+                 return hot
+            else:
+                 return defaultEmoji    # Default emoji
+
+        else:
+             return defaultEmoji   # Default emoji
