@@ -9,8 +9,8 @@ import commands
 from logger import logger
 
 # Configuration
-BOTNAME = 'experiment'
-TOKEN = '682028880:AAFSJjYfITyFUOAGqQVlYvCvUATJFgCd2os'
+BOTNAME = 'KoeBot'
+TOKEN = os.environ['KOE_TOKEN']
 
 def error(bot, update, error):
     """Log Errors caused by Updates."""

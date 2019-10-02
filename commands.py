@@ -10,8 +10,8 @@ from logger import logger
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-BOTNAME = 'experiment'
-WEATHER_API_KEY = '47fc9a1a1e552b8f4b742bcf406fc830'
+BOTNAME = 'KoeBot'
+WEATHER_API_KEY = os.environ['WEATHER_API_KEY']
 
 
 # Command handlers
