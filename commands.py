@@ -111,10 +111,13 @@ THIRTY_MINUTES = 30 * 60
 @cachetools.cached(cachetools.TTLCache(maxsize=1, ttl=THIRTY_MINUTES))
 def query_news_source():
     news_source = "https://www.reddit.com/r/machinelearning/hot.json?count=5"
-    response = requests.get(news_source, headers={'user-agent': 'KoeBot by /u/SciDataUCM'}).json()
-    return response
-
-
+    try:
+        response = requests.get(news_source, headers={'user-agent': 'KoeBot by /u/SciDataUCM'}).json()
+        return response
+    except requests.exceptions.HTTPError as error:
+        print error
+        sys.exit(1)
+    
 def news(bot, update):
     response = query_news_source()
     formatted_links = [
