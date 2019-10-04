@@ -45,6 +45,9 @@ Besides [Python 3.6](https://www.python.org/downloads/) we will be using the fol
 * [python-telegram-bot](https://python-telegram-bot.org/)
 * [requests](http://docs.python-requests.org/en/master/)
 * [cachetools](https://cachetools.readthedocs.io/en/latest/)
+* [beautifulsoup4](https://pypi.org/project/beautifulsoup4/)
+* [pytest](https://docs.pytest.org/en/latest/)
+* [datetime](https://docs.python.org/3/library/datetime.html)
 
 You can simply install each package using `pip` as follows:
 ```bash

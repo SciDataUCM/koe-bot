@@ -4,4 +4,5 @@ requests>=2.20.0
 cachetools
 pytest
 tgintegration
+datetime
 beautifulsoup4==4.6.3
