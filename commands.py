@@ -115,7 +115,7 @@ def query_news_source():
         response = requests.get(news_source, headers={'user-agent': 'KoeBot by /u/SciDataUCM'}).json()
         return response
     except requests.exceptions.HTTPError as error:
-        print error
+        print(error)
         sys.exit(1)
     
 def news(bot, update):
