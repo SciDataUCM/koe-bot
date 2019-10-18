@@ -5,16 +5,18 @@
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 import os
-import commands
-from logger import logger
+from src import commands
+from src.logger import logger
 
 # Configuration
 BOTNAME = 'KoeBot'
 TOKEN = os.environ['KOE_TOKEN']
 
+
 def error(bot, update, error):
     """Log Errors caused by Updates."""
-    logger.warning('Update "%s" caused error "%s"', update, error)
+    logger.warning('Update {} caused error {}'.format(update, error))
+
 
 def main():
     """ Start Koe """
@@ -32,9 +34,8 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('calendar', commands.calendar))
     updater.dispatcher.add_handler(CommandHandler('social', commands.social))
     updater.dispatcher.add_handler(CommandHandler('learn', commands.learn))
-    forecast = commands.forecast()
-    updater.dispatcher.add_handler(CommandHandler('forecast', forecast.forecast))
-    updater.dispatcher.add_handler(CallbackQueryHandler(forecast.forecast_response)) #this is for the bot to notice wich forecast button was pressed
+    updater.dispatcher.add_handler(CommandHandler('forecast', commands.Forecast))
+    updater.dispatcher.add_handler(CallbackQueryHandler(commands.Forecast.forecast_response)) #this is for the bot to notice wich forecast button was pressed
 
     # log all errors
     updater.dispatcher.add_error_handler(error)
@@ -45,6 +46,7 @@ def main():
     # SIGTERM or SIGABRT. This should be used most of the time, since
     # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
+
 
 if __name__ == '__main__':
     main()

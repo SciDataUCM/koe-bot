@@ -4,15 +4,22 @@ import cachetools
 import os
 import json
 
-from config import *
-from logger import logger
+from src.config import *
+from src.logger import logger
 
 from bs4 import BeautifulSoup
 from datetime import datetime
 
 BOTNAME = 'KoeBot'
 WEATHER_API_KEY = os.environ['WEATHER_API_KEY']
-
+COLLABORATE_LINK = "https://docs.google.com/forms/d/e/1FAIpQLSeMJnOmN6xRua5CtTnwbYIv83gSL_EsjNUkNvV0HzKe82OAEQ/viewform"
+MEMBERSHIP_LINK = "https://docs.google.com/forms/d/e/1FAIpQLSdKRf8Lah2-2LFcUv3TIIcKDUhtBv1WdrdfQjwf4M0-XChRxA/viewform"
+WEB_SCIDATA = "https://scidataucm.org/"
+TWITTER_SCIDATA = "https://twitter.com/scidataucm"
+INSTAGRAM_SCIDATA = "https://www.instagram.com/scidataucm"
+GITHUB_SCIDATA = "https://github.com/SciDataUCM"
+EMAIL_SCIDATA = "scidata@ucm.es"
+CALENDAR_SCIDATA = "https://calendar.google.com/calendar/htmlembed?src=scidata@ucm.es&mode=AGENDA&ctz=Europe/Madrid"
 
 # Command handlers
 def start(bot, update):
@@ -35,27 +42,31 @@ def welcome(bot, update):
     bot.send_message(
         chat_id=update.message.chat_id,
         text=(
-            """¡Bienvenid@ ! Mi nombre es Koe 🐼 Aquí tienes información
-            sobre SciDataUCM
-            que tal vez te interese 😊\n[Website🌐]
-            (https://scidataucm.org/) - [Twitter🐤](
-            https://twitter.com/scidataucm)
-            - [Instagram📷](https://www.instagram.com/scidataucm/) -
-            [Github💻](https://github.com/SciDataUCM)
-             - Email✉: scidata@ucm.es"""
+            "¡Bienvenid@ ! Mi nombre es Koe 🐼 Aquí tienes información"
+            "sobre SciDataUCM que tal vez te interese 😊\n"
+            "[Website🌐] ({WEB})\n"
+            "- [Twitter🐤] (TWITTER)\n"
+            "- [Instagram📷](INSTAGRAM)\n"
+            "- [Github💻](GITHUB)\n"
+            "- [Email✉]: {EMAIL}".format(WEB=WEB_SCIDATA, TWITTER=TWITTER_SCIDATA, INSTAGRAM=INSTAGRAM_SCIDATA,
+                                         GITHUB=GITHUB_SCIDATA, EMAIL=EMAIL_SCIDATA)
         ),
         parse_mode=telegram.ParseMode.MARKDOWN)
 
+
 def social(bot, update):
-    social_media = ["https://github.com/SciDataUCM", "https://twitter.com/scidataucm", "https://www.instagram.com/scidataucm/", "scidata@ucm.es"]
+    social_media = [GITHUB_SCIDATA, TWITTER_SCIDATA,
+                    INSTAGRAM_SCIDATA, WEB_SCIDATA]
     bot.send_message(
         chat_id=update.message.chat_id,
-        text=(
-            """Redes sociales de SciDataUCM:\n[Github💻]({})\n[Twitter🐤]({})\n
-            [Instagram📷]({})\n
-             - Email ✉: {}""").format(*social_media[:4]),
+        text=("Redes sociales de SciDataUCM:\n"
+              "[Github💻]({})\n"
+              "[Twitter🐤]({})\n"
+              "[Instagram📷]({})\n"
+              "[Email ✉]: ({})".format(*social_media[:4])),
         parse_mode=telegram.ParseMode.MARKDOWN
     )
+
 
 def goodbye(bot, update):
     logger.info("{}(username={}) left chat {}".format(
@@ -75,9 +86,9 @@ def empty_message(bot, update):
             return goodbye(bot, update)
 
 
-def where(bot, update):
-    update.message.reply_text('Vivo en el despacho 120 de la Facultad de Informatica de la Universidad Complutense de Madrid ☺')
-
+def where(update):
+    update.message.reply_text('Vivo en el despacho 120 de la Facultad de Informatica de la Universidad '
+                              'Complutense de Madrid ☺')
 
 
 def collaborate(bot, update):
@@ -85,9 +96,7 @@ def collaborate(bot, update):
         chat_id=update.message.chat_id,
         text=(
             "Para colaborar con SciDataUCM accede al siguiente enlace:"
-            "- [Link🌐](https://docs.google.com/forms/d/e"
-            "/1FAIpQLSeMJnOmN6xRua5CtTnwbYIv83gSL_EsjNUkNvV0HzKe82OAEQ"
-            "/viewform)"
+            " - [Link🌐]({})".format(COLLABORATE_LINK)
         ),
         parse_mode=telegram.ParseMode.MARKDOWN)
 
@@ -97,9 +106,7 @@ def membership(bot, update):
         chat_id=update.message.chat_id,
         text=(
             "Para ser miembro de SciDataUCM rellena el siguiente formulario:"
-            "[Link🌐](https://docs.google.com/forms/d/e"
-            "/1FAIpQLSdKRf8Lah2-2LFcUv3TIIcKDUhtBv1WdrdfQjwf4M0-XChRxA"
-            "/viewform)"
+            "[Link🌐]()".format(MEMBERSHIP_LINK)
         ),
         parse_mode=telegram.ParseMode.MARKDOWN
     )
@@ -107,7 +114,7 @@ def membership(bot, update):
 
 # Cache the news source for 30 minutes to avoid getting throttled and improve
 # latency for repeated calls.
-THIRTY_MINUTES = 30 * 60
+THIRTY_MINUTES = 30 * 60  # 30 * 60 seconds
 @cachetools.cached(cachetools.TTLCache(maxsize=1, ttl=THIRTY_MINUTES))
 def query_news_source():
     news_source = "https://www.reddit.com/r/machinelearning/hot.json?count=5"
@@ -115,41 +122,48 @@ def query_news_source():
         response = requests.get(news_source, headers={'user-agent': 'KoeBot by /u/SciDataUCM'}).json()
         return response
     except requests.exceptions.HTTPError as error:
-        print(error)
-        sys.exit(1)
-    
+        logger.log(mesg=error)
+        raise Exception()
+
+
 def news(bot, update):
-    response = query_news_source()
+    try:
+        response = query_news_source()
+    except Exception:
+        update.message.reply_text('Lo siento, ¡no puedo conseguir noticias en este momento!')
     formatted_links = [
         "- {}; LINK({})".format(item['data']["title"], item['data']["url"])
         for item in response["data"]["children"]
     ]
     bot.send_message(chat_id=update.message.chat_id, text=("\n\n".join(formatted_links[:5])))
 
+
 def weather(bot, update):
     """Send a message when the command /weather is issued."""
     try:
         r = requests.get('{}&appid={}'.format(WEATHER_BASE_URL, WEATHER_API_KEY))
-        weather = json.loads(r.text)
-    except:
+        weather_info = json.loads(r.text)
+    except Exception as error:
+        logger.log(msg=error.__str__)
         update.message.reply_text('Lo siento, ¡desconozco el tiempo atmosférico actual!')
     else:
         K = 273.15
-        CURRENT_TEMP = "{0:.2f}".format(weather['main']['temp'] - K)
+        CURRENT_TEMP = "{0:.2f}".format(weather_info['main']['temp'] - K)
         weather_message = '{}({}) en la facultad! La temperatura actual es {} ºC'.format(
-            weather['weather'][0]['main'],
-            weather['weather'][0]['description'].title(),
+            weather_info['weather'][0]['main'],
+            weather_info['weather'][0]['description'].title(),
             CURRENT_TEMP
         )
 
         temperature_message = 'La temperatura MIN y MAX son {0:.2f} ºC y {1:.2f} ºC, respectivamente.'.format(
-            weather['main']['temp_min'] - K,
-            weather['main']['temp_max'] - K
+            weather_info['main']['temp_min'] - K,
+            weather_info['main']['temp_max'] - K
         )
 
         update.message.reply_text('{}\n{}\n'.format(
             weather_message,
             temperature_message))
+
 
 def pollution(bot, update):
     try:
@@ -157,29 +171,31 @@ def pollution(bot, update):
         o3_pollution = json.loads(requests.get('{}?appid={}'.format(O3_POLLUTION_BASE_URL, WEATHER_API_KEY)).text)
         so2_pollution = json.loads(requests.get('{}?appid={}'.format(SO2_POLLUTION_BASE_URL, WEATHER_API_KEY)).text)
         no2_pollution = json.loads(requests.get('{}?appid={}'.format(NO2_POLLUTION_BASE_URL, WEATHER_API_KEY)).text)
-    except:
+    except Exception as error:
+        logger.log(msg=error.__str__)
         update.message.reply_text('Lo siento, ¡desconozco el nivel de contaminación actual!')
-    else:
-        for read in co_pollution['data']:
-            if read['pressure']<215 and read['pressure']>0.00464:
-                co_pollution_message = 'Polución de CO en la facultad tiene un nivel de {} '.format(read['value'])
-                break
-        for read in so2_pollution['data']:
-            if read['pressure']<215 and read['pressure']>0.00464:
-                so2_pollution_message = 'Polución de SO2 en la facultad tiene un nivel de {} '.format(read['value'])
-                break
-        o3_pollution_message = 'Polución de O3 en la facultad tiene un nivel de {} '.format(o3_pollution['data'])
-        no2_pollution_message = 'Polución de NO2 en la facultad tiene un nivel de {} '.format(no2_pollution['data']['no2']['value'])
-        update.message.reply_text(co_pollution_message)
-        update.message.reply_text(so2_pollution_message)
-        update.message.reply_text(o3_pollution_message)
-        update.message.reply_text(no2_pollution_message)
+
+    for read in co_pollution['data']:
+        if 215 > read['pressure'] > 0.00464:
+            co_pollution_message = 'Polución de CO en la facultad tiene un nivel de {} '.format(read['value'])
+            break
+    for read in so2_pollution['data']:
+        if 215 > read['pressure'] > 0.00464:
+            so2_pollution_message = 'Polución de SO2 en la facultad tiene un nivel de {} '.format(read['value'])
+            break
+    o3_pollution_message = 'Polución de O3 en la facultad tiene un nivel de {} '.format(o3_pollution['data'])
+    no2_pollution_message = 'Polución de NO2 en la facultad tiene un nivel de {} '.format(no2_pollution['data']['no2']['value'])
+    update.message.reply_text(co_pollution_message)
+    update.message.reply_text(so2_pollution_message)
+    update.message.reply_text(o3_pollution_message)
+    update.message.reply_text(no2_pollution_message)
+
 
 def calendar(bot, update):
     def __get_calendar():
-        calendar = requests.get('https://calendar.google.com/calendar/htmlembed?src=scidata@ucm.es&mode=AGENDA&ctz=Europe/Madrid')
-        calendar = BeautifulSoup(calendar.text, features='html.parser')
-        return calendar.find_all('div', {'class': 'view-container'}, limit=1)
+        calendar_info = requests.get(CALENDAR_SCIDATA)
+        calendar_info = BeautifulSoup(calendar_info.text, features='html.parser')
+        return calendar_info.find_all('div', {'class': 'view-container'}, limit=1)
 
     def __parse_calendar_date(calendar_date):
         date = calendar_date.upper()
@@ -187,10 +203,10 @@ def calendar(bot, update):
         return '{0} - {1}'.format(date[0], date[1].replace(" ", "/"))
 
     def __get_events():
-        calendar = __get_calendar()
-        if calendar[0].div.div is False:
+        calendar_info = __get_calendar()
+        if calendar_info[0].div.div is False:
             response = ''
-            for event_day in calendar:
+            for event_day in calendar_info:
                 day = __parse_calendar_date(event_day.div.div.text)
                 events = []
                 for event in event_day.div.table.tbody:
@@ -204,6 +220,7 @@ def calendar(bot, update):
 
     update.message.reply_text(__get_events())
 
+
 def learn(bot, update):
     bot.send_message(
         chat_id=update.message.chat_id,
@@ -215,63 +232,60 @@ def learn(bot, update):
         ),
         parse_mode=telegram.ParseMode.MARKDOWN)
 
-class forecast:
-    
 
-
+class Forecast:
     def __init__(self):
-        self.w = 0
+        self.weather_info = None
     """Send a message to select between dates when the command /forecast is issued."""	
-    def forecast(self,bot, update):
+    def forecast(self, update):
         try:
             r = requests.get('{}&appid={}'.format(FORECAST_BASE_URL, WEATHER_API_KEY))
-            weather = json.loads(r.text)
-            self.w = weather
+            weather_info = json.loads(r.text)
+            self.weather_info = weather_info
         except:
             update.message.reply_text('Lo siento, ¡desconozco el tiempo atmosférico actual!')
         else:
             days = []
-            for i in range(weather['cnt']):
-                date_time_str = weather['list'][i]['dt_txt']
+            for i in range(weather_info['cnt']):
+                date_time_str = weather_info['list'][i]['dt_txt']
                 date_time = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
                 d = date_time.strftime("%d")
-                if(d not in days):
-                     days.append(d)
+                if d not in days:
+                    days.append(d)
             keyboard = []
             keyboard_inside = []
 
             for x in days:
-                #print(x)
-                keyboard_button = telegram.InlineKeyboardButton("dia: {0}".format(x), callback_data=x )
+                keyboard_button = telegram.InlineKeyboardButton("dia: {0}".format(x), callback_data=x)
                 keyboard_inside.append(keyboard_button)
         
             keyboard.append(keyboard_inside)
             reply_markup = telegram.InlineKeyboardMarkup(keyboard)
-            update.message.reply_text("Indicame que dia quieres: {0} - {1}".format([days[i] for i in (0, -1)][0] , [days[i] for i in (0, -1)][-1]) , reply_markup=reply_markup)
+            update.message.reply_text("Indicame que dia quieres: {0} - {1}".format([days[i] for i in (0, -1)][0],
+                                                                                   [days[i] for i in (0, -1)][-1]),
+                                      reply_markup=reply_markup)
         
     """handle the reply of the button selected, sended by the funcion above"""
-    def forecast_response(self, bot, update):
+    def forecast_response(self, update):
         K = 273.15
         query = update.callback_query
-        #query.message.reply_text("selected option: {}".format(query.data))
         msg = ["PREVISION DEL TIEMPO PARA EL DIA: {} \n".format(query.data)]
-        for i in range(self.w['cnt']):
-
-            if(query.data in self.w['list'][i]['dt_txt']):
-                weather = self.w['list'][i]
-                date_time_str = weather['dt_txt']
+        for i in range(self.weather_info['cnt']):
+            if query.data in self.weather_info['list'][i]['dt_txt']:
+                weather_info_elem = self.weather_info['list'][i]
+                date_time_str = weather_info_elem['dt_txt']
                 date_time = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
-                h = date_time.strftime("%H")                
-                temp = "{0:.2f}".format(weather['main']['temp'] -K)
-                weather_id = weather['weather'][0]['id'] #for the icons
-                #print(weather_id)
-                icon = self.getEmoji(weather_id)
-                msg.append("hora: {} , tiempo: {}{} , temperatura: {} ºC \n".format(h, weather['weather'][0]['description'] , icon , temp ))
+                h = date_time.strftime("%H")
+                temp = "{0:.2f}".format(weather_info_elem['main']['temp'] -K)
+                weather_id = weather_info_elem['weather'][0]['id']  #for the icons
+                icon = self.get_emoji(weather_id)
+                msg.append("hora: {} , tiempo: {}{} , temperatura: {} ºC \n"
+                           .format(h, weather_info_elem['weather'][0]['description'] , icon , temp ))
         query.edit_message_text(''.join(msg))
 
-    def getEmoji(self, weatherID):
-
-        #handling emojis: credit to: https://github.com/mustafababil/Telegram-Weather-Bot/blob/master/responseController.py#L11
+    def get_emoji(self, weather_id):
+        #handling emojis:
+        # credit to: https://github.com/mustafababil/Telegram-Weather-Bot/blob/master/responseController.py#L11
 
         thunderstorm = u'\U0001F4A8'    # Code: 200's, 900, 901, 902, 905
         drizzle = u'\U0001F4A7'         # Code: 300's
@@ -279,33 +293,33 @@ class forecast:
         snowflake = u'\U00002744'       # Code: 600's snowflake
         snowman = u'\U000026C4'         # Code: 600's snowman, 903, 906
         atmosphere = u'\U0001F301'      # Code: 700's foogy
-        clearSky = u'\U00002600'        # Code: 800 clear sky
-        fewClouds = u'\U000026C5'       # Code: 801 sun behind clouds
+        clear_sky = u'\U00002600'        # Code: 800 clear sky
+        few_clouds = u'\U000026C5'       # Code: 801 sun behind clouds
         clouds = u'\U00002601'          # Code: 802-803-804 clouds general
         hot = u'\U0001F525'             # Code: 904
-        defaultEmoji = u'\U0001F300'    # default emojis
+        default_emoji = u'\U0001F300'    # default emojis
 
-        if weatherID:
-            if str(weatherID)[0] == '2' or weatherID == 900 or weatherID==901 or weatherID==902 or weatherID==905:
+        if weather_id:
+            if 200 <= weather_id < 300 or weather_id in [900, 901, 902, 905]:
                 return thunderstorm
-            elif str(weatherID)[0] == '3':
+            elif 300 <= weather_id < 400:
                 return drizzle
-            elif str(weatherID)[0] == '5':
+            elif 500 <= weather_id < 600:
                 return rain
-            elif str(weatherID)[0] == '6' or weatherID==903 or weatherID== 906:
+            elif 600 <= weather_id < 700 or weather_id in [903, 906]:
                 return snowflake + ' ' + snowman
-            elif str(weatherID)[0] == '7':
+            elif 700 <= weather_id < 800:
                 return atmosphere
-            elif weatherID == 800:
-                return clearSky
-            elif weatherID == 801:
-                return fewClouds
-            elif weatherID==802 or weatherID==803 or weatherID==803:
+            elif weather_id == 800:
+                return clear_sky
+            elif weather_id == 801:
+                return few_clouds
+            elif weather_id in [802, 803, 804]:
                 return clouds
-            elif weatherID == 904:
-                 return hot
+            elif weather_id == 904:
+                return hot
             else:
-                 return defaultEmoji    # Default emoji
+                return default_emoji    # Default emoji
 
         else:
-             return defaultEmoji   # Default emoji
+            return default_emoji   # Default emoji
